@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:flutter_soloud/flutter_soloud.dart';
@@ -12,10 +13,25 @@ Uint8List _renderNoiseWavIsolate(NoiseParams params) {
 }
 
 class SoLoudAudioEngine implements AudioEngine {
-  AudioSource? _currentSource;
-  SoundHandle? _currentHandle;
-  double _volume = 1.0;
-  int _bufferId = 0;
+  // Noise voice
+  AudioSource? _noiseSource;
+  SoundHandle? _noiseHandle;
+  double _noiseVolume = 1.0;
+  int _noiseBufferId = 0;
+
+  // File voice
+  AudioSource? _fileSource;
+  SoundHandle? _fileHandle;
+  double _fileVolume = 1.0;
+  Duration _fileDuration = Duration.zero;
+  Timer? _positionTimer;
+  final _positionController = StreamController<Duration>.broadcast();
+
+  @override
+  Duration get fileDuration => _fileDuration;
+
+  @override
+  Stream<Duration> get filePositionStream => _positionController.stream;
 
   @override
   Future<void> init() async {
@@ -26,62 +42,70 @@ class SoLoudAudioEngine implements AudioEngine {
 
   @override
   Future<void> dispose() async {
+    _positionTimer?.cancel();
     await stopNoise(fadeDuration: Duration.zero);
+    if (_fileHandle != null) {
+      SoLoud.instance.stop(_fileHandle!);
+      _fileHandle = null;
+    }
+    if (_fileSource != null) {
+      await SoLoud.instance.disposeSource(_fileSource!);
+      _fileSource = null;
+    }
+    await _positionController.close();
     if (SoLoud.instance.isInitialized) {
       await SoLoud.instance.deinit();
     }
   }
 
+  // --- Noise Voice ---
+
   @override
   Future<void> playNoise(NoiseParams params) async {
     await init();
 
-    // Render WAV buffer in background isolate
     final wavBytes = await Isolate.run(() => _renderNoiseWavIsolate(params));
-    final soundName = 'brown_noise_${++_bufferId}.wav';
+    final soundName = 'brown_noise_${++_noiseBufferId}.wav';
     final newSource = await SoLoud.instance.loadMem(soundName, wavBytes);
 
-    final oldHandle = _currentHandle;
-    final oldSource = _currentSource;
+    final oldHandle = _noiseHandle;
+    final oldSource = _noiseSource;
 
     if (oldHandle != null) {
-      // Crossfade: start new voice silent, fade new in and old out over 250ms
       final newHandle = await SoLoud.instance.play(
         newSource,
         looping: true,
         volume: 0.0,
       );
-      SoLoud.instance.fadeVolume(newHandle, _volume, const Duration(milliseconds: 250));
+      SoLoud.instance.fadeVolume(newHandle, _noiseVolume, const Duration(milliseconds: 250));
       SoLoud.instance.fadeVolume(oldHandle, 0.0, const Duration(milliseconds: 250));
       SoLoud.instance.scheduleStop(oldHandle, const Duration(milliseconds: 250));
 
-      _currentHandle = newHandle;
-      _currentSource = newSource;
+      _noiseHandle = newHandle;
+      _noiseSource = newSource;
 
-      // Dispose old source after crossfade finishes
       if (oldSource != null) {
         Future.delayed(const Duration(milliseconds: 300), () async {
           await SoLoud.instance.disposeSource(oldSource);
         });
       }
     } else {
-      // First playback
-      _currentSource = newSource;
-      _currentHandle = await SoLoud.instance.play(
+      _noiseSource = newSource;
+      _noiseHandle = await SoLoud.instance.play(
         newSource,
         looping: true,
-        volume: _volume,
+        volume: _noiseVolume,
       );
     }
   }
 
   @override
   Future<void> stopNoise({Duration fadeDuration = const Duration(milliseconds: 250)}) async {
-    final handle = _currentHandle;
-    final source = _currentSource;
+    final handle = _noiseHandle;
+    final source = _noiseSource;
 
-    _currentHandle = null;
-    _currentSource = null;
+    _noiseHandle = null;
+    _noiseSource = null;
 
     if (handle != null) {
       if (fadeDuration > Duration.zero) {
@@ -104,10 +128,85 @@ class SoLoudAudioEngine implements AudioEngine {
 
   @override
   Future<void> setNoiseVolume(double volume) async {
-    _volume = volume;
-    final handle = _currentHandle;
+    _noiseVolume = volume;
+    final handle = _noiseHandle;
     if (handle != null) {
       SoLoud.instance.setVolume(handle, volume);
     }
+  }
+
+  // --- File Voice ---
+
+  @override
+  Future<void> loadAndPlayFile(String path) async {
+    await init();
+
+    // Clean up previous file voice
+    _positionTimer?.cancel();
+    if (_fileHandle != null) {
+      SoLoud.instance.stop(_fileHandle!);
+      _fileHandle = null;
+    }
+    if (_fileSource != null) {
+      await SoLoud.instance.disposeSource(_fileSource!);
+      _fileSource = null;
+    }
+
+    final source = await SoLoud.instance.loadFile(path);
+    _fileSource = source;
+    _fileDuration = SoLoud.instance.getLength(source);
+
+    _fileHandle = await SoLoud.instance.play(
+      source,
+      volume: _fileVolume,
+    );
+
+    // Stream position every 100 ms
+    _positionTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+      final handle = _fileHandle;
+      if (handle != null && !_positionController.isClosed) {
+        final pos = SoLoud.instance.getPosition(handle);
+        _positionController.add(pos);
+      }
+    });
+  }
+
+  @override
+  Future<void> pauseFile() async {
+    final handle = _fileHandle;
+    if (handle != null) {
+      SoLoud.instance.setPause(handle, true);
+    }
+  }
+
+  @override
+  Future<void> resumeFile() async {
+    final handle = _fileHandle;
+    if (handle != null) {
+      SoLoud.instance.setPause(handle, false);
+    }
+  }
+
+  @override
+  Future<void> seek(Duration position) async {
+    final handle = _fileHandle;
+    if (handle != null) {
+      SoLoud.instance.seek(handle, position);
+      _positionController.add(position);
+    }
+  }
+
+  @override
+  Future<void> setSpeed(double speed) async {
+    final handle = _fileHandle;
+    if (handle != null) {
+      SoLoud.instance.setRelativePlaySpeed(handle, speed);
+    }
+  }
+
+  @override
+  Future<void> pauseAll() async {
+    await stopNoise(fadeDuration: const Duration(milliseconds: 150));
+    await pauseFile();
   }
 }

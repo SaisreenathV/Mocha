@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/database.dart';
 import '../domain/audio_engine.dart';
 import '../domain/noise_params.dart';
 
@@ -12,13 +13,13 @@ final audioHandlerProvider = Provider<MochaAudioHandler>((ref) {
 
 class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
   final AudioEngine _engine;
-  NoiseParams _currentParams = NoiseParams.classicBrown;
+  NoiseParams _currentNoiseParams = NoiseParams.classicBrown;
   double _userVolume = 1.0;
   bool _isDucked = false;
 
   MochaAudioHandler(this._engine) {
     _initAudioSession();
-    updatePreset('Classic Brown', _currentParams);
+    updatePreset('Classic Brown', _currentNoiseParams);
   }
 
   Future<void> _initAudioSession() async {
@@ -58,13 +59,26 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   void updatePreset(String presetName, NoiseParams params) {
-    _currentParams = params;
+    _currentNoiseParams = params;
     mediaItem.add(
       MediaItem(
         id: 'brown_noise',
         album: 'Mocha',
         title: 'Brown Noise - $presetName',
         artist: 'Mocha Offline Audio',
+        playable: true,
+      ),
+    );
+  }
+
+  void updateTrack(Track track) {
+    mediaItem.add(
+      MediaItem(
+        id: track.id,
+        album: track.album ?? 'Mocha',
+        title: track.title,
+        artist: track.artist ?? 'Unknown Artist',
+        duration: track.durationMs != null ? Duration(milliseconds: track.durationMs!) : null,
         playable: true,
       ),
     );
@@ -80,13 +94,13 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
     playbackState.add(
       playbackState.value.copyWith(
         controls: [MediaControl.pause, MediaControl.stop],
-        systemActions: const {MediaAction.play, MediaAction.pause, MediaAction.stop},
+        systemActions: const {MediaAction.play, MediaAction.pause, MediaAction.stop, MediaAction.seek},
         androidCompactActions: const [0],
         processingState: AudioProcessingState.ready,
         playing: true,
       ),
     );
-    await _engine.playNoise(_currentParams);
+    await _engine.resumeFile();
   }
 
   @override
@@ -94,13 +108,13 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
     playbackState.add(
       playbackState.value.copyWith(
         controls: [MediaControl.play, MediaControl.stop],
-        systemActions: const {MediaAction.play, MediaAction.pause, MediaAction.stop},
+        systemActions: const {MediaAction.play, MediaAction.pause, MediaAction.stop, MediaAction.seek},
         androidCompactActions: const [0],
         processingState: AudioProcessingState.ready,
         playing: false,
       ),
     );
-    await _engine.stopNoise();
+    await _engine.pauseAll();
   }
 
   @override
@@ -112,6 +126,16 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
         playing: false,
       ),
     );
-    await _engine.stopNoise();
+    await _engine.pauseAll();
+  }
+
+  @override
+  Future<void> seek(Duration position) async {
+    await _engine.seek(position);
+    playbackState.add(
+      playbackState.value.copyWith(
+        updatePosition: position,
+      ),
+    );
   }
 }
