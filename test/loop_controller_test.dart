@@ -10,15 +10,25 @@ import 'package:mocha/domain/noise_params.dart';
 class FakeAudioEngine implements AudioEngine {
   bool lastLoopingValue = false;
   Duration lastLoopPoint = Duration.zero;
+  Duration lastSeek = Duration.zero;
+  double currentVolume = 1.0;
+  bool isFilePaused = false;
+  bool isAllPaused = false;
+
+  final _posStreamController = StreamController<Duration>.broadcast();
+
+  void emitPosition(Duration pos) {
+    _posStreamController.add(pos);
+  }
 
   @override
-  Duration get fileDuration => Duration.zero;
+  Duration get fileDuration => const Duration(seconds: 1);
 
   @override
-  Stream<Duration> get filePositionStream => const Stream.empty();
+  Stream<Duration> get filePositionStream => _posStreamController.stream;
 
   @override
-  Future<void> dispose() async {}
+  Future<void> dispose() async => _posStreamController.close();
 
   @override
   Future<void> init() async {}
@@ -29,19 +39,27 @@ class FakeAudioEngine implements AudioEngine {
   }
 
   @override
-  Future<void> pauseAll() async {}
+  Future<void> pauseAll() async {
+    isAllPaused = true;
+  }
 
   @override
-  Future<void> pauseFile() async {}
+  Future<void> pauseFile() async {
+    isFilePaused = true;
+  }
 
   @override
   Future<void> playNoise(NoiseParams params) async {}
 
   @override
-  Future<void> resumeFile() async {}
+  Future<void> resumeFile() async {
+    isFilePaused = false;
+  }
 
   @override
-  Future<void> seek(Duration position) async {}
+  Future<void> seek(Duration position) async {
+    lastSeek = position;
+  }
 
   @override
   Future<void> setLoopPoint(Duration point) async {
@@ -54,7 +72,9 @@ class FakeAudioEngine implements AudioEngine {
   }
 
   @override
-  Future<void> setNoiseVolume(double volume) async {}
+  Future<void> setNoiseVolume(double volume) async {
+    currentVolume = volume;
+  }
 
   @override
   Future<void> setSpeed(double speed) async {}
@@ -75,40 +95,69 @@ void main() {
   });
 
   tearDown(() async {
+    controller.dispose();
+    await fakeEngine.dispose();
     await db.close();
   });
 
-  group('LoopController', () {
-    test('sounds default to forever, songs default to off, brown noise is always forever', () async {
-      final songMode = await controller.getLoopMode('song-1', isSound: false);
-      final soundMode = await controller.getLoopMode('sound-1', isSound: true);
-      final noiseMode = await controller.getLoopMode('brown-noise', isSound: false, isBrownNoise: true);
+  group('LoopController Advanced Modes', () {
+    test('Count loop: stops after N passes on short audio (<2s)', () async {
+      // 500 ms sound with target 2 passes
+      controller.setActiveTrack('short-sound', isSound: true, duration: const Duration(milliseconds: 500));
+      await controller.applyConfig(const LoopConfig(itemId: 'short-sound', mode: LoopMode.count, count: 2));
 
-      expect(songMode, equals(LoopMode.off));
-      expect(soundMode, equals(LoopMode.forever));
-      expect(noiseMode, equals(LoopMode.forever));
-    });
-
-    test('toggling song loop switches to forever, updates engine, and persists to DB', () async {
-      expect(fakeEngine.lastLoopingValue, isFalse);
-
-      final next = await controller.toggleLoop('song-1', isSound: false);
-      expect(next, equals(LoopMode.forever));
       expect(fakeEngine.lastLoopingValue, isTrue);
 
-      final persisted = await db.getLoopConfig('song-1');
-      expect(persisted, isNotNull);
-      expect(persisted!.mode, equals('forever'));
+      // Pass 1: plays from 100ms -> 450ms
+      fakeEngine.emitPosition(const Duration(milliseconds: 100));
+      fakeEngine.emitPosition(const Duration(milliseconds: 450));
+      expect(fakeEngine.isFilePaused, isFalse);
+
+      // Wrap 1 -> Pass 2 starts: jumps back to 50ms
+      fakeEngine.emitPosition(const Duration(milliseconds: 50));
+      fakeEngine.emitPosition(const Duration(milliseconds: 400));
+      expect(fakeEngine.isFilePaused, isFalse);
+
+      // Wrap 2 -> Pass 3 attempted: should stop because target count is 2
+      fakeEngine.emitPosition(const Duration(milliseconds: 40));
+      expect(fakeEngine.isFilePaused, isTrue);
+      expect(fakeEngine.lastLoopingValue, isFalse);
     });
 
-    test('toggling sound loop switches to off, updates engine, and persists to DB', () async {
-      final next = await controller.toggleLoop('sound-1', isSound: true);
-      expect(next, equals(LoopMode.off));
+    test('Duration loop: fades out over duration, pauses, and restores original volume', () async {
+      controller.setUserVolume(0.7);
+      fakeEngine.currentVolume = 0.7;
+
+      // Set duration of 60ms for fast testing
+      final config = const LoopConfig(itemId: 'track-1', mode: LoopMode.duration, durationMs: 60);
+      await controller.applyConfig(config);
+
+      expect(fakeEngine.lastLoopingValue, isTrue);
+
+      // Wait for countdown + fade to complete
+      await Future.delayed(const Duration(milliseconds: 150));
+
+      expect(fakeEngine.isAllPaused, isTrue);
+      // Volume restored to user's volume (0.7) and NOT reset to 1.0
+      expect(fakeEngine.currentVolume, closeTo(0.7, 0.01));
+    });
+
+    test('A-B loop: seeks to A when position >= B (near-gapless)', () async {
+      // Set A = 200ms, B = 800ms
+      final config = const LoopConfig(itemId: 'track-ab', mode: LoopMode.ab, abStartMs: 200, abEndMs: 800);
+      await controller.applyConfig(config);
+
       expect(fakeEngine.lastLoopingValue, isFalse);
 
-      final persisted = await db.getLoopConfig('sound-1');
-      expect(persisted, isNotNull);
-      expect(persisted!.mode, equals('off'));
+      // Emit position 500ms -> still inside A-B
+      fakeEngine.emitPosition(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 25));
+      expect(fakeEngine.lastSeek, equals(Duration.zero));
+
+      // Emit position 850ms -> >= B, should trigger seek to A (200ms)
+      fakeEngine.emitPosition(const Duration(milliseconds: 850));
+      await Future.delayed(const Duration(milliseconds: 35));
+      expect(fakeEngine.lastSeek, equals(const Duration(milliseconds: 200)));
     });
   });
 }

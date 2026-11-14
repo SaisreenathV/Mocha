@@ -1,11 +1,8 @@
 enum LoopMode {
   off,
   forever,
-  // TODO: count mode - loop a specified number of times.
   count,
-  // TODO: duration mode - loop for a specified total duration.
   duration,
-  // TODO: ab mode - loop between two specific timestamp markers.
   ab,
 }
 
