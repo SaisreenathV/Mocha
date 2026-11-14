@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../audio/loop_controller.dart';
 import '../../domain/loop_config.dart';
+import '../eq/eq_screen.dart';
 import 'player_controller.dart';
 import 'widgets/loop_config_sheet.dart';
 
@@ -55,6 +56,16 @@ class NowPlayingScreen extends ConsumerWidget {
         title: const Text('Now Playing'),
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.equalizer_rounded),
+            tooltip: 'Equalizer & Crossfade',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const EqScreen()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.tune_rounded),
             tooltip: 'Loop Settings',
