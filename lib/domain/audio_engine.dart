@@ -10,11 +10,13 @@ abstract class AudioEngine {
   Future<void> setNoiseVolume(double volume);
 
   // File voice
-  Future<void> loadAndPlayFile(String path);
+  Future<void> loadAndPlayFile(String path, {bool looping = false});
   Future<void> pauseFile();
   Future<void> resumeFile();
   Future<void> seek(Duration position);
   Future<void> setSpeed(double speed);
+  Future<void> setLooping(bool looping);
+  Future<void> setLoopPoint(Duration point);
   Duration get fileDuration;
   Stream<Duration> get filePositionStream;
 

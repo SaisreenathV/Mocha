@@ -23,12 +23,35 @@ class Tracks extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Tracks])
+@DataClassName('ItemLoopConfigData')
+class ItemLoopConfigs extends Table {
+  TextColumn get itemId => text()();
+  TextColumn get mode => text()();
+  IntColumn get count => integer().nullable()();
+  IntColumn get durationMs => integer().nullable()();
+  IntColumn get abStartMs => integer().nullable()();
+  IntColumn get abEndMs => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {itemId};
+}
+
+@DriftDatabase(tables: [Tracks, ItemLoopConfigs])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(itemLoopConfigs);
+      }
+    },
+  );
 
   Stream<List<Track>> watchAllTracks({String query = ''}) {
     if (query.trim().isEmpty) {
@@ -49,6 +72,14 @@ class AppDatabase extends _$AppDatabase {
     final rows = await (update(tracks)..where((t) => t.id.equals(id)))
         .write(TracksCompanion(isSound: Value(!currentValue)));
     return rows > 0;
+  }
+
+  Future<ItemLoopConfigData?> getLoopConfig(String itemId) {
+    return (select(itemLoopConfigs)..where((t) => t.itemId.equals(itemId))).getSingleOrNull();
+  }
+
+  Future<int> setLoopConfig(ItemLoopConfigsCompanion config) {
+    return into(itemLoopConfigs).insertOnConflictUpdate(config);
   }
 
   static LazyDatabase _openConnection() {
