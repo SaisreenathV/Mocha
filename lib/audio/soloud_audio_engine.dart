@@ -32,6 +32,11 @@ class SoLoudAudioEngine implements AudioEngine {
   final List<SoundHandle?> _layeredHandles = [null, null, null];
   final List<double> _layeredVolumes = [0.8, 0.8, 0.8];
 
+  // Global Equalizer (8 real bands)
+  bool _eqEnabled = true;
+  final List<double> _eqBands = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+  bool _eqInitialized = false;
+
   @override
   Duration get fileDuration => _fileDuration;
 
@@ -42,6 +47,20 @@ class SoLoudAudioEngine implements AudioEngine {
   Future<void> init() async {
     if (!SoLoud.instance.isInitialized) {
       await SoLoud.instance.init();
+    }
+    await _initGlobalEq();
+  }
+
+  Future<void> _initGlobalEq() async {
+    if (_eqInitialized) return;
+    try {
+      SoLoud.instance.filters.addFilter(FilterType.parametricEq);
+      _eqInitialized = true;
+    } catch (_) {
+      try {
+        SoLoud.instance.filters.addFilter(FilterType.equalizerFilter);
+        _eqInitialized = true;
+      } catch (_) {}
     }
   }
 
@@ -177,6 +196,50 @@ class SoLoudAudioEngine implements AudioEngine {
   }
 
   @override
+  Future<void> crossfadeToFile(String path, Duration duration) async {
+    await init();
+
+    if (_fileHandle == null || duration <= Duration.zero) {
+      await loadAndPlayFile(path, looping: false);
+      return;
+    }
+
+    final oldHandle = _fileHandle!;
+    final oldSource = _fileSource;
+
+    _positionTimer?.cancel();
+
+    final newSource = await SoLoud.instance.loadFile(path);
+    _fileSource = newSource;
+    _fileDuration = SoLoud.instance.getLength(newSource);
+
+    final newHandle = await SoLoud.instance.play(
+      newSource,
+      volume: 0.0,
+      looping: false,
+    );
+    _fileHandle = newHandle;
+
+    SoLoud.instance.fadeVolume(newHandle, _fileVolume, duration);
+    SoLoud.instance.fadeVolume(oldHandle, 0.0, duration);
+    SoLoud.instance.scheduleStop(oldHandle, duration);
+
+    if (oldSource != null) {
+      Future.delayed(duration + const Duration(milliseconds: 100), () async {
+        await SoLoud.instance.disposeSource(oldSource);
+      });
+    }
+
+    _positionTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
+      final handle = _fileHandle;
+      if (handle != null && !_positionController.isClosed) {
+        final pos = SoLoud.instance.getPosition(handle);
+        _positionController.add(pos);
+      }
+    });
+  }
+
+  @override
   Future<void> pauseFile() async {
     final handle = _fileHandle;
     if (handle != null) {
@@ -285,6 +348,58 @@ class SoLoudAudioEngine implements AudioEngine {
   Future<void> stopAllLayeredSounds() async {
     for (int i = 0; i < 3; i++) {
       await stopLayeredSound(i);
+    }
+  }
+
+  // --- Global Equalizer (8 real bands) ---
+
+  @override
+  Future<void> setEqBand(int bandIndex, double gainDb) async {
+    if (bandIndex < 0 || bandIndex >= 8) return;
+    _eqBands[bandIndex] = gainDb;
+    if (!_eqEnabled) return;
+
+    await init();
+    try {
+      SoLoud.instance.filters.setFilterParameter(
+        FilterType.parametricEq.index,
+        bandIndex,
+        gainDb,
+      );
+    } catch (_) {
+      try {
+        SoLoud.instance.filters.setFilterParameter(
+          FilterType.equalizerFilter.index,
+          bandIndex,
+          gainDb,
+        );
+      } catch (_) {}
+    }
+  }
+
+  @override
+  Future<void> applyEqBands(List<double> gainsDb) async {
+    for (int i = 0; i < gainsDb.length && i < 8; i++) {
+      await setEqBand(i, gainsDb[i]);
+    }
+  }
+
+  @override
+  Future<void> setEqEnabled(bool enabled) async {
+    _eqEnabled = enabled;
+    await init();
+    if (!enabled) {
+      for (int i = 0; i < 8; i++) {
+        try {
+          SoLoud.instance.filters.setFilterParameter(
+            FilterType.parametricEq.index,
+            i,
+            0.0,
+          );
+        } catch (_) {}
+      }
+    } else {
+      await applyEqBands(_eqBands);
     }
   }
 
