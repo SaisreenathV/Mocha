@@ -22,6 +22,22 @@ class NoiseParams {
     this.volume = 1.0,
   });
 
+  NoiseParams copyWith({
+    double? depth,
+    double? cutoffHz,
+    double? warmthDb,
+    double? stereoWidth,
+    double? volume,
+  }) {
+    return NoiseParams(
+      depth: depth ?? this.depth,
+      cutoffHz: cutoffHz ?? this.cutoffHz,
+      warmthDb: warmthDb ?? this.warmthDb,
+      stereoWidth: stereoWidth ?? this.stereoWidth,
+      volume: volume ?? this.volume,
+    );
+  }
+
   static const NoiseParams classicBrown = NoiseParams(
     depth: 30.0,
     cutoffHz: 800.0,
