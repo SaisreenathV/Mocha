@@ -3,23 +3,21 @@
 ## Files
 - `lib/domain/`: `noise_params.dart`, `loop_config.dart`, `saved_mix.dart`, `eq_config.dart`, `lrc_parser.dart`, `audio_engine.dart`.
 - `lib/audio/`: `volume_controller.dart`, `soloud_audio_engine.dart`, `loop_controller.dart`.
-- `lib/platform/mocha_audio_handler.dart`: AudioService background handler.
+- `lib/platform/`: `mocha_audio_handler.dart` (MPRIS), `linux_tray_service.dart` (Tray & WindowManager).
 - `lib/data/database.dart`: Drift DB (Tracks, LoopConfigs, SavedMixes, EqSettings, ListeningSessions v6).
-- `lib/features/noise/`: Noise studio, presets, depth dial.
-- `lib/features/player/`: Player controller, MiniPlayer, NowPlaying, LoopConfigSheet, TimerSheet.
-- `lib/features/library/`: Library screen with import & Sound tagging.
-- `lib/features/mixes/`: MixController (1-tap restore) & MixesScreen (3 layered sounds).
-- `lib/features/eq/`: EqController & EqScreen (8 real bands, 4 presets, 0-12s crossfade).
-- `lib/features/lyrics/`: Full-screen synced LyricsScreen with sidecar .lrc detection & tap-to-seek.
-- `lib/features/stats/`: SessionRecorder & StatsScreen (this week, longest, streak, top 5 sounds).
+- `lib/features/`: Noise studio, Player, Library, Mixes, EQ, Lyrics, Stats.
+- `packaging/linux/mocha.desktop`: XDG desktop entry for Linux integration.
+- `tool/`: `build_appimage.sh` (AppImage builder), `render_wav.dart`.
 - `test/`: `brown_noise_test.dart`, `loop_controller_test.dart`, `lrc_parser_test.dart`.
 
 ## What Works
-- LRC parser with full unit tests, sidecar `.lrc` detection, and binary-search line indexing.
-- Synced lyrics full-screen view: active line highlighting, auto-centering scroll, and tap-to-seek.
-- ListeningSessions table v6: automatically records sessions (>= 5s) when playback stops.
-- Stats screen: Time this week, longest session, current daily streak, and top 5 sounds bar widgets (no chart pkgs).
-- 8-band global EQ, 4 presets, 0-12s crossfade, 1-tap mixes, sleep/pomodoro timers, dual-voice engine.
+- MPRIS integration: separate Play, Pause (never starts playback), PlayPause, Next, Previous, metadata & loop status.
+- System tray with Show, Play/Pause, Quit, and close-to-tray window management.
+- Drag & Drop file import onto the window (`desktop_drop` with visual feedback & validation).
+- Desktop shortcuts: Space (toggle), Left/Right (±10s seek), L (loop), Ctrl+K (search), ignoring text input focus.
+- Linux packaging: XDG `.desktop` file and self-contained `build_appimage.sh` script.
+- Synced lyrics with sidecar `.lrc` and tap-to-seek; listening sessions & stats screen (bar widgets).
+- 8-band EQ on global bus, queue crossfade (0-12s), 1-tap mixes, sleep/pomodoro timers.
 
 ## What's Next
 - Settings screen (theme toggle espresso/latte, default audio settings).
