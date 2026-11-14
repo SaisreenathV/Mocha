@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../app.dart';
 import '../../audio/loop_controller.dart';
 import '../../data/providers.dart';
 import '../../features/noise/noise_controller.dart';
@@ -113,6 +114,20 @@ class _AdaptiveShellState extends ConsumerState<AdaptiveShell> {
         HardwareKeyboard.instance.isMetaPressed;
     if (isCtrlOrCmd && event.logicalKey == LogicalKeyboardKey.keyK) {
       context.go('/search');
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl + / Ctrl - / Ctrl 0 -> UI Scaling
+    if (isCtrlOrCmd && (event.logicalKey == LogicalKeyboardKey.equal || event.logicalKey == LogicalKeyboardKey.add)) {
+      ref.read(uiScaleProvider.notifier).update((s) => (s + 0.15).clamp(0.8, 2.5));
+      return KeyEventResult.handled;
+    }
+    if (isCtrlOrCmd && event.logicalKey == LogicalKeyboardKey.minus) {
+      ref.read(uiScaleProvider.notifier).update((s) => (s - 0.15).clamp(0.8, 2.5));
+      return KeyEventResult.handled;
+    }
+    if (isCtrlOrCmd && event.logicalKey == LogicalKeyboardKey.digit0) {
+      ref.read(uiScaleProvider.notifier).state = 1.0;
       return KeyEventResult.handled;
     }
 

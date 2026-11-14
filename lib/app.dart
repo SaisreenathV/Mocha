@@ -51,12 +51,15 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
+final uiScaleProvider = StateProvider<double>((ref) => 1.0);
+
 class MochaApp extends ConsumerWidget {
   const MochaApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final uiScale = ref.watch(uiScaleProvider);
 
     return MaterialApp.router(
       title: 'Mocha',
@@ -65,6 +68,14 @@ class MochaApp extends ConsumerWidget {
       darkTheme: MochaTheme.espressoTheme,
       themeMode: ThemeMode.system,
       routerConfig: router,
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(uiScale),
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
     );
   }
 }
