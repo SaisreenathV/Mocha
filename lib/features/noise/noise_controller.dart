@@ -77,7 +77,7 @@ class NoiseController extends StateNotifier<NoiseState> {
 
   void setVolume(double volume) {
     state = state.copyWith(params: state.params.copyWith(volume: volume));
-    _audioHandler.setVolume(volume);
+    _audioHandler.setNoiseVolume(volume);
   }
 
   void updateParam(NoiseParams Function(NoiseParams) updater) {
