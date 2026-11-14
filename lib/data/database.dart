@@ -49,12 +49,25 @@ class Mixes extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Tracks, ItemLoopConfigs, Mixes])
+@DataClassName('SavedMix')
+class SavedMixes extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get noiseParamsJson => text()();
+  RealColumn get noiseVolume => real().withDefault(const Constant(0.8))();
+  TextColumn get soundsJson => text()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [Tracks, ItemLoopConfigs, Mixes, SavedMixes])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -65,6 +78,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 3) {
         await m.createTable(mixes);
+      }
+      if (from < 4) {
+        await m.createTable(savedMixes);
       }
     },
   );
@@ -112,6 +128,22 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteMix(String id) {
     return (delete(mixes)..where((t) => t.id.equals(id))).go();
+  }
+
+  Stream<List<SavedMix>> watchAllSavedMixes() {
+    return (select(savedMixes)..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).watch();
+  }
+
+  Future<SavedMix?> getSavedMixById(String id) {
+    return (select(savedMixes)..where((t) => t.id.equals(id))).getSingleOrNull();
+  }
+
+  Future<int> saveSavedMix(SavedMixesCompanion mix) {
+    return into(savedMixes).insertOnConflictUpdate(mix);
+  }
+
+  Future<int> deleteSavedMix(String id) {
+    return (delete(savedMixes)..where((t) => t.id.equals(id))).go();
   }
 
   static LazyDatabase _openConnection() {
