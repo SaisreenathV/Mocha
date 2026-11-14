@@ -1,8 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../audio/loop_controller.dart';
 import '../../features/player/mini_player.dart';
+import '../../features/player/player_controller.dart';
 
-class AdaptiveShell extends StatelessWidget {
+class AdaptiveShell extends ConsumerWidget {
   final Widget child;
 
   const AdaptiveShell({
@@ -62,13 +67,39 @@ class AdaptiveShell extends StatelessWidget {
     }
   }
 
+  KeyEventResult _handleDesktopKeyEvent(FocusNode node, KeyEvent event, WidgetRef ref) {
+    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.keyL) {
+      final focusedContext = FocusManager.instance.primaryFocus?.context;
+      if (focusedContext != null) {
+        final isEditing = focusedContext.findAncestorWidgetOfExactType<EditableText>() != null;
+        if (isEditing) {
+          return KeyEventResult.ignored;
+        }
+      }
+
+      final activeTrack = ref.read(playerControllerProvider).currentTrack;
+      if (activeTrack != null) {
+        ref.read(loopControllerProvider).toggleLoop(
+          activeTrack.id,
+          isSound: activeTrack.isSound,
+        ).then((next) {
+          ref.read(activeLoopModeProvider.notifier).state = next;
+        });
+        return KeyEventResult.handled;
+      }
+    }
+    return KeyEventResult.ignored;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final path = GoRouterState.of(context).uri.path;
     final isWide = MediaQuery.sizeOf(context).width >= 700;
 
+    Widget shellContent;
+
     if (isWide) {
-      return Scaffold(
+      shellContent = Scaffold(
         body: Row(
           children: [
             NavigationRail(
@@ -124,37 +155,47 @@ class AdaptiveShell extends StatelessWidget {
           ],
         ),
       );
+    } else {
+      shellContent = Scaffold(
+        body: child,
+        bottomNavigationBar: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const MiniPlayer(),
+            NavigationBar(
+              selectedIndex: _getBottomNavIndex(path),
+              onDestinationSelected: (idx) => _onBottomNavTapped(context, idx),
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.home_outlined),
+                  selectedIcon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.search_outlined),
+                  selectedIcon: Icon(Icons.search),
+                  label: 'Search',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.library_music_outlined),
+                  selectedIcon: Icon(Icons.library_music),
+                  label: 'Library',
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
     }
 
-    return Scaffold(
-      body: child,
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const MiniPlayer(),
-          NavigationBar(
-            selectedIndex: _getBottomNavIndex(path),
-            onDestinationSelected: (idx) => _onBottomNavTapped(context, idx),
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.search_outlined),
-                selectedIcon: Icon(Icons.search),
-                label: 'Search',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.library_music_outlined),
-                selectedIcon: Icon(Icons.library_music),
-                label: 'Library',
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+      return Focus(
+        autofocus: true,
+        onKeyEvent: (node, event) => _handleDesktopKeyEvent(node, event, ref),
+        child: shellContent,
+      );
+    }
+
+    return shellContent;
   }
 }
