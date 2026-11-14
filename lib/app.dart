@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'core/shell/adaptive_shell.dart';
 import 'core/theme/mocha_theme.dart';
+import 'features/noise/noise_screen.dart';
 import 'features/placeholder_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -26,7 +27,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/noise',
-            builder: (context, state) => const PlaceholderScreen(title: 'Noise'),
+            builder: (context, state) => const NoiseScreen(),
           ),
           GoRoute(
             path: '/mixes',
