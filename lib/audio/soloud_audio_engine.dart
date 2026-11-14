@@ -138,10 +138,9 @@ class SoLoudAudioEngine implements AudioEngine {
   // --- File Voice ---
 
   @override
-  Future<void> loadAndPlayFile(String path) async {
+  Future<void> loadAndPlayFile(String path, {bool looping = false}) async {
     await init();
 
-    // Clean up previous file voice
     _positionTimer?.cancel();
     if (_fileHandle != null) {
       SoLoud.instance.stop(_fileHandle!);
@@ -159,9 +158,9 @@ class SoLoudAudioEngine implements AudioEngine {
     _fileHandle = await SoLoud.instance.play(
       source,
       volume: _fileVolume,
+      looping: looping,
     );
 
-    // Stream position every 100 ms
     _positionTimer = Timer.periodic(const Duration(milliseconds: 100), (_) {
       final handle = _fileHandle;
       if (handle != null && !_positionController.isClosed) {
@@ -201,6 +200,22 @@ class SoLoudAudioEngine implements AudioEngine {
     final handle = _fileHandle;
     if (handle != null) {
       SoLoud.instance.setRelativePlaySpeed(handle, speed);
+    }
+  }
+
+  @override
+  Future<void> setLooping(bool looping) async {
+    final handle = _fileHandle;
+    if (handle != null) {
+      SoLoud.instance.setLooping(handle, looping);
+    }
+  }
+
+  @override
+  Future<void> setLoopPoint(Duration point) async {
+    final handle = _fileHandle;
+    if (handle != null) {
+      SoLoud.instance.setLoopPoint(handle, point);
     }
   }
 
