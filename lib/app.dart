@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'core/shell/adaptive_shell.dart';
 import 'core/theme/mocha_theme.dart';
 import 'features/library/library_screen.dart';
+import 'features/mixes/mixes_screen.dart';
 import 'features/noise/noise_studio_screen.dart';
 import 'features/placeholder_screen.dart';
 
@@ -32,7 +33,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/mixes',
-            builder: (context, state) => const PlaceholderScreen(title: 'Mixes'),
+            builder: (context, state) => const MixesScreen(),
           ),
           GoRoute(
             path: '/stats',

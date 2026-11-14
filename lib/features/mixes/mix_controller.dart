@@ -51,10 +51,8 @@ class MixController extends StateNotifier<MixState> {
     );
 
     // Apply noise preset and volume, then play.
-    final preset = NoiseParams.presets.firstWhere(
-      (p) => p.name == mix.noisePreset,
-      orElse: () => NoiseParams.presets.first,
-    );
+    final preset = NoiseParams.presetMap[mix.noisePreset] ??
+        NoiseParams.classicBrown;
     await _noise.selectPreset(mix.noisePreset, preset);
     _noise.setVolume(mix.noiseVolume); // sync call
     await _noise.play();

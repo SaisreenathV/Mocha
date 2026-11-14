@@ -85,4 +85,14 @@ class NoiseParams {
     stereoWidth: 0.5,
     volume: 1.0,
   );
+
+  /// Canonical name → params map, shared by noise studio and mixes.
+  static const Map<String, NoiseParams> presetMap = {
+    'Classic Brown': classicBrown,
+    'Deep Rumble': deepRumble,
+    'Soft Brown': softBrown,
+    'Focus': focus,
+    'Deep Sleep': deepSleep,
+    'Airplane Cabin': airplaneCabin,
+  };
 }

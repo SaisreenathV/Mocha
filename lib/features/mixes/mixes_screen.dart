@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 import '../../data/database.dart';
 import '../../domain/mix_model.dart';
 import '../../domain/noise_params.dart';
@@ -221,7 +220,7 @@ class _CreateMixSheet extends ConsumerStatefulWidget {
 
 class _CreateMixSheetState extends ConsumerState<_CreateMixSheet> {
   final _nameCtrl = TextEditingController();
-  String _preset = NoiseParams.presets.first.name;
+  String _preset = NoiseParams.presetMap.keys.first;
   double _noiseVol = 0.8;
   double _trackVol = 0.8;
 
@@ -255,11 +254,11 @@ class _CreateMixSheetState extends ConsumerState<_CreateMixSheet> {
           const SizedBox(height: 6),
           Wrap(
             spacing: 8,
-            children: NoiseParams.presets.map((p) {
+            children: NoiseParams.presetMap.keys.map((name) {
               return ChoiceChip(
-                label: Text(p.name),
-                selected: _preset == p.name,
-                onSelected: (_) => setState(() => _preset = p.name),
+                label: Text(name),
+                selected: _preset == name,
+                onSelected: (_) => setState(() => _preset = name),
               );
             }).toList(),
           ),
@@ -281,7 +280,7 @@ class _CreateMixSheetState extends ConsumerState<_CreateMixSheet> {
                 final name = _nameCtrl.text.trim();
                 if (name.isEmpty) return;
                 final mix = SoundscapeMix(
-                  id: const Uuid().v4(),
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
                   name: name,
                   noisePreset: _preset,
                   noiseVolume: _noiseVol,
