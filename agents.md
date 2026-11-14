@@ -17,3 +17,4 @@ Rules:
   waveforms, no placeholder EQ).
 - When a chunk is finished, give me an updated PROJECT_NOTES.md (max 40 lines:
   file list, what works, what's next).
+- Always give me commit messages after any changes made in the code base.
