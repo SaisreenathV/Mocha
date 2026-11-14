@@ -31,7 +31,7 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
         switch (event.type) {
           case AudioInterruptionType.duck:
             _isDucked = true;
-            _engine.setNoiseVolume(_userVolume * 0.5);
+            _engine.setMasterVolume(_userVolume * 0.5);
             break;
           case AudioInterruptionType.pause:
           case AudioInterruptionType.unknown:
@@ -42,7 +42,7 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
         switch (event.type) {
           case AudioInterruptionType.duck:
             _isDucked = false;
-            _engine.setNoiseVolume(_userVolume);
+            _engine.setMasterVolume(_userVolume);
             break;
           case AudioInterruptionType.pause:
             play();
@@ -84,9 +84,14 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
     );
   }
 
+  /// Master volume setter — only VolumeController may call this directly.
   void setVolume(double volume) {
     _userVolume = volume;
-    _engine.setNoiseVolume(_isDucked ? volume * 0.5 : volume);
+    _engine.setMasterVolume(_isDucked ? volume * 0.5 : volume);
+  }
+
+  void setNoiseVolume(double volume) {
+    _engine.setNoiseVolume(volume);
   }
 
   @override
