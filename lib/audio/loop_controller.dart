@@ -41,6 +41,11 @@ class LoopController {
     await applyConfig(config);
   }
 
+  Future<LoopMode> getLoopMode(String itemId, {required bool isSound}) async {
+    final config = await getLoopConfig(itemId, isSound: isSound);
+    return config.mode;
+  }
+
   Future<LoopConfig> getLoopConfig(String itemId, {required bool isSound, bool isBrownNoise = false}) async {
     if (isBrownNoise) {
       return LoopConfig(itemId: itemId, mode: LoopMode.forever);

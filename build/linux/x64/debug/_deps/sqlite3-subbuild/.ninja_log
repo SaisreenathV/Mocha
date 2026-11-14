@@ -1,0 +1,21 @@
+# ninja log v7
+0	12	1794692781122844720	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-mkdir	66d76e154fd2b602
+0	12	1794692781122844720	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-mkdir	66d76e154fd2b602
+12	3505	1794692784614869927	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-download	caf8c740efbfddd7
+12	3505	1794692784614869927	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-download	caf8c740efbfddd7
+3505	3517	1794692784626870014	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-update	566cc08837100318
+3505	3517	1794692784626870014	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-update	566cc08837100318
+3517	3525	1794692784635870079	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-patch	cd2bbb7f83260dee
+3517	3525	1794692784635870079	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-patch	cd2bbb7f83260dee
+3525	3537	1794692784646870158	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-configure	95aab4b12a457327
+3525	3537	1794692784646870158	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-configure	95aab4b12a457327
+3537	3548	1794692784658870245	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-build	1c3a2c592cc6be85
+3537	3548	1794692784658870245	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-build	1c3a2c592cc6be85
+3548	3561	1794692784670870332	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-install	ee24d02274ab9d46
+3548	3561	1794692784670870332	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-install	ee24d02274ab9d46
+3561	3570	1794692784679870396	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-test	db21a035675cb177
+3561	3570	1794692784679870396	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-test	db21a035675cb177
+3570	3586	1794692784696870519	CMakeFiles/sqlite3-populate-complete	4d6f530032a76bbd
+3570	3586	1794692784696870519	sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-done	4d6f530032a76bbd
+3570	3586	1794692784696870519	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/CMakeFiles/sqlite3-populate-complete	4d6f530032a76bbd
+3570	3586	1794692784696870519	/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/_deps/sqlite3-subbuild/sqlite3-populate-prefix/src/sqlite3-populate-stamp/sqlite3-populate-done	4d6f530032a76bbd

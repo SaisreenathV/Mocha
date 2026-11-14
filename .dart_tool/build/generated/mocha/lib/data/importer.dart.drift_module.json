@@ -1,0 +1,12 @@
+{
+  "elements": {},
+  "imports": [
+    "package:audio_metadata_reader/audio_metadata_reader.dart",
+    "package:drift/drift.dart",
+    "package:file_picker/file_picker.dart",
+    "package:path/path.dart",
+    "package:path_provider/path_provider.dart",
+    "package:uuid/uuid.dart",
+    "package:mocha/data/database.dart"
+  ]
+}

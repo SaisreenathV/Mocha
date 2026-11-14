@@ -81,6 +81,35 @@ class FakeAudioEngine implements AudioEngine {
 
   @override
   Future<void> stopNoise({Duration fadeDuration = const Duration(milliseconds: 250)}) async {}
+
+  Future<void> setFileVolume(double volume) async {}
+
+  @override
+  Future<void> setMasterVolume(double volume) async {}
+
+  @override
+  Future<void> crossfadeToFile(String path, Duration duration) async {}
+
+  @override
+  Future<void> playLayeredSound(int slot, String path, {double volume = 0.8, bool looping = true, Duration? loopPoint}) async {}
+
+  @override
+  Future<void> stopLayeredSound(int index) async {}
+
+  @override
+  Future<void> stopAllLayeredSounds() async {}
+
+  @override
+  Future<void> setLayeredSoundVolume(int index, double volume) async {}
+
+  @override
+  Future<void> setEqBand(int bandIndex, double gainDb) async {}
+
+  @override
+  Future<void> applyEqBands(List<double> gainsDb) async {}
+
+  @override
+  Future<void> setEqEnabled(bool enabled) async {}
 }
 
 void main() {

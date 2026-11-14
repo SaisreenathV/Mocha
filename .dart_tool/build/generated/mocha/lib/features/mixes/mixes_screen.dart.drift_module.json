@@ -1,0 +1,12 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/data/database.dart",
+    "package:mocha/data/providers.dart",
+    "package:mocha/domain/saved_mix.dart",
+    "package:mocha/features/player/widgets/timer_sheet.dart",
+    "package:mocha/features/mixes/mix_controller.dart"
+  ]
+}

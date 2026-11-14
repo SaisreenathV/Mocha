@@ -1,0 +1,9 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:tray_manager/tray_manager.dart",
+    "package:window_manager/window_manager.dart",
+    "package:mocha/platform/mocha_audio_handler.dart"
+  ]
+}

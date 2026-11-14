@@ -1,0 +1,8 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter_test/flutter_test.dart",
+    "package:mocha/audio/dsp/brown_noise_synthesizer.dart",
+    "package:mocha/domain/noise_params.dart"
+  ]
+}

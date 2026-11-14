@@ -1,0 +1,14 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:go_router/go_router.dart",
+    "package:mocha/domain/noise_params.dart",
+    "package:mocha/features/eq/eq_screen.dart",
+    "package:mocha/features/noise/noise_controller.dart",
+    "package:mocha/features/noise/widgets/depth_dial.dart",
+    "package:mocha/features/noise/widgets/real_spectrum_visualizer.dart",
+    "package:mocha/features/stats/stats_screen.dart"
+  ]
+}

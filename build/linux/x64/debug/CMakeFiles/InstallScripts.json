@@ -1,0 +1,17 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/flutter/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/runner/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/desktop_drop/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/screen_retriever/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/sqlite3_flutter_libs/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/tray_manager/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/window_manager/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/flutter_soloud/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/jni/cmake_install.cmake",
+		"/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/debug/plugins/jni/shared/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -1,0 +1,13 @@
+{
+  "elements": {},
+  "imports": [
+    "package:audio_service/audio_service.dart",
+    "package:flutter/material.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/app.dart",
+    "package:mocha/audio/soloud_audio_engine.dart",
+    "package:mocha/data/database.dart",
+    "package:mocha/data/providers.dart",
+    "package:mocha/platform/mocha_audio_handler.dart"
+  ]
+}

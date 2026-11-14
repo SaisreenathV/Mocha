@@ -1,0 +1,17 @@
+{
+  "elements": {},
+  "imports": [
+    "package:desktop_drop/desktop_drop.dart",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:go_router/go_router.dart",
+    "package:mocha/audio/loop_controller.dart",
+    "package:mocha/data/providers.dart",
+    "package:mocha/features/noise/noise_controller.dart",
+    "package:mocha/features/player/mini_player.dart",
+    "package:mocha/features/player/player_controller.dart",
+    "package:mocha/features/stats/session_recorder.dart",
+    "package:mocha/platform/linux_tray_service.dart"
+  ]
+}

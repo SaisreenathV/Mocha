@@ -1,0 +1,14 @@
+{
+  "elements": {},
+  "imports": [
+    "package:drift/drift.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/audio/providers.dart",
+    "package:mocha/data/database.dart",
+    "package:mocha/data/providers.dart",
+    "package:mocha/domain/audio_engine.dart",
+    "package:mocha/domain/noise_params.dart",
+    "package:mocha/domain/saved_mix.dart",
+    "package:mocha/features/noise/noise_controller.dart"
+  ]
+}

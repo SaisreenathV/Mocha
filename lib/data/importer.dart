@@ -72,6 +72,8 @@ class TrackImporter {
 
   static const supportedExtensions = ['mp3', 'wav', 'flac', 'ogg', 'm4a', 'aac'];
 
+  Future<int> importFiles(List<String> rawPaths) => _processAndInsertPaths(rawPaths);
+
   Future<int> pickAndImportFiles() async {
     final result = await FilePicker.platform.pickFiles(
       allowMultiple: true,

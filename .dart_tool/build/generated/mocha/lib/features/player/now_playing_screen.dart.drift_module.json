@@ -1,0 +1,13 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/audio/loop_controller.dart",
+    "package:mocha/domain/loop_config.dart",
+    "package:mocha/features/eq/eq_screen.dart",
+    "package:mocha/features/lyrics/lyrics_screen.dart",
+    "package:mocha/features/player/player_controller.dart",
+    "package:mocha/features/player/widgets/loop_config_sheet.dart"
+  ]
+}

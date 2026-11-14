@@ -1,0 +1,13 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/audio/loop_controller.dart",
+    "package:mocha/audio/providers.dart",
+    "package:mocha/data/database.dart",
+    "package:mocha/domain/audio_engine.dart",
+    "package:mocha/domain/loop_config.dart",
+    "package:mocha/platform/mocha_audio_handler.dart",
+    "package:mocha/features/eq/eq_controller.dart"
+  ]
+}

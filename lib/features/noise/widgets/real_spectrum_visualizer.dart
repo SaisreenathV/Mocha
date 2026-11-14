@@ -56,7 +56,8 @@ class _RealSpectrumVisualizerState extends State<RealSpectrumVisualizer> {
     _streamSub?.cancel();
     // Render short 2-second buffer for FFT analysis
     final synth = BrownNoiseSynthesizer();
-    _renderedBuffer = synth.renderStereo(widget.params, seconds: 2.0, sampleRate: 44100);
+    final f32 = synth.renderStereo(widget.params, seconds: 2.0, sampleRate: 44100);
+    _renderedBuffer = Float64List.fromList(f32);
 
     if (widget.isPlaying) {
       _startStream();

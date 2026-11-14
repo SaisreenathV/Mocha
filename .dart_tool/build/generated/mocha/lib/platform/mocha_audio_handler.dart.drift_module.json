@@ -1,0 +1,12 @@
+{
+  "elements": {},
+  "imports": [
+    "package:audio_service/audio_service.dart",
+    "package:audio_session/audio_session.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/data/database.dart",
+    "package:mocha/domain/audio_engine.dart",
+    "package:mocha/domain/loop_config.dart",
+    "package:mocha/domain/noise_params.dart"
+  ]
+}

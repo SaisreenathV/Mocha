@@ -1,0 +1,12 @@
+{
+  "elements": {},
+  "imports": [
+    "package:drift/native.dart",
+    "package:flutter_test/flutter_test.dart",
+    "package:mocha/audio/loop_controller.dart",
+    "package:mocha/data/database.dart",
+    "package:mocha/domain/audio_engine.dart",
+    "package:mocha/domain/loop_config.dart",
+    "package:mocha/domain/noise_params.dart"
+  ]
+}

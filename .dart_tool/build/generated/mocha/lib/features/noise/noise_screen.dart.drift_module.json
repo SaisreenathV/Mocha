@@ -1,0 +1,9 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/domain/noise_params.dart",
+    "package:mocha/features/noise/noise_controller.dart"
+  ]
+}

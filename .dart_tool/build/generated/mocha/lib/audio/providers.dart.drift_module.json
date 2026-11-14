@@ -1,0 +1,8 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/domain/audio_engine.dart",
+    "package:mocha/audio/soloud_audio_engine.dart"
+  ]
+}

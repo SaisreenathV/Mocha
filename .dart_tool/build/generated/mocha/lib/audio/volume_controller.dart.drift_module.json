@@ -1,0 +1,9 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/domain/audio_engine.dart",
+    "package:mocha/platform/mocha_audio_handler.dart",
+    "package:mocha/audio/providers.dart"
+  ]
+}

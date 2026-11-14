@@ -1,0 +1,11 @@
+{
+  "elements": {},
+  "imports": [
+    "package:drift/drift.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/data/database.dart",
+    "package:mocha/data/providers.dart",
+    "package:mocha/features/noise/noise_controller.dart",
+    "package:mocha/features/player/player_controller.dart"
+  ]
+}

@@ -1,0 +1,3509 @@
+// ignore_for_file: type=lint
+class $TracksTable extends Tracks with TableInfo<$TracksTable, Track> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TracksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _filePathMeta =
+      const VerificationMeta('filePath');
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+      'file_path', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _artistMeta = const VerificationMeta('artist');
+  @override
+  late final GeneratedColumn<String> artist = GeneratedColumn<String>(
+      'artist', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _albumMeta = const VerificationMeta('album');
+  @override
+  late final GeneratedColumn<String> album = GeneratedColumn<String>(
+      'album', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _durationMsMeta =
+      const VerificationMeta('durationMs');
+  @override
+  late final GeneratedColumn<int> durationMs = GeneratedColumn<int>(
+      'duration_ms', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _isSoundMeta =
+      const VerificationMeta('isSound');
+  @override
+  late final GeneratedColumn<bool> isSound = GeneratedColumn<bool>(
+      'is_sound', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_sound" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _isLikedMeta =
+      const VerificationMeta('isLiked');
+  @override
+  late final GeneratedColumn<bool> isLiked = GeneratedColumn<bool>(
+      'is_liked', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_liked" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _playCountMeta =
+      const VerificationMeta('playCount');
+  @override
+  late final GeneratedColumn<int> playCount = GeneratedColumn<int>(
+      'play_count', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _lastPlayedAtMeta =
+      const VerificationMeta('lastPlayedAt');
+  @override
+  late final GeneratedColumn<DateTime> lastPlayedAt = GeneratedColumn<DateTime>(
+      'last_played_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        filePath,
+        title,
+        artist,
+        album,
+        durationMs,
+        isSound,
+        isLiked,
+        playCount,
+        lastPlayedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tracks';
+  @override
+  VerificationContext validateIntegrity(Insertable<Track> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(_filePathMeta,
+          filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta));
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('artist')) {
+      context.handle(_artistMeta,
+          artist.isAcceptableOrUnknown(data['artist']!, _artistMeta));
+    }
+    if (data.containsKey('album')) {
+      context.handle(
+          _albumMeta, album.isAcceptableOrUnknown(data['album']!, _albumMeta));
+    }
+    if (data.containsKey('duration_ms')) {
+      context.handle(
+          _durationMsMeta,
+          durationMs.isAcceptableOrUnknown(
+              data['duration_ms']!, _durationMsMeta));
+    }
+    if (data.containsKey('is_sound')) {
+      context.handle(_isSoundMeta,
+          isSound.isAcceptableOrUnknown(data['is_sound']!, _isSoundMeta));
+    }
+    if (data.containsKey('is_liked')) {
+      context.handle(_isLikedMeta,
+          isLiked.isAcceptableOrUnknown(data['is_liked']!, _isLikedMeta));
+    }
+    if (data.containsKey('play_count')) {
+      context.handle(_playCountMeta,
+          playCount.isAcceptableOrUnknown(data['play_count']!, _playCountMeta));
+    }
+    if (data.containsKey('last_played_at')) {
+      context.handle(
+          _lastPlayedAtMeta,
+          lastPlayedAt.isAcceptableOrUnknown(
+              data['last_played_at']!, _lastPlayedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Track map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Track(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      filePath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}file_path'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      artist: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}artist']),
+      album: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}album']),
+      durationMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}duration_ms']),
+      isSound: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_sound'])!,
+      isLiked: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_liked'])!,
+      playCount: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}play_count'])!,
+      lastPlayedAt: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}last_played_at']),
+    );
+  }
+
+  @override
+  $TracksTable createAlias(String alias) {
+    return $TracksTable(attachedDatabase, alias);
+  }
+}
+
+class Track extends DataClass implements Insertable<Track> {
+  final String id;
+  final String filePath;
+  final String title;
+  final String? artist;
+  final String? album;
+  final int? durationMs;
+  final bool isSound;
+  final bool isLiked;
+  final int playCount;
+  final DateTime? lastPlayedAt;
+  const Track(
+      {required this.id,
+      required this.filePath,
+      required this.title,
+      this.artist,
+      this.album,
+      this.durationMs,
+      required this.isSound,
+      required this.isLiked,
+      required this.playCount,
+      this.lastPlayedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['file_path'] = Variable<String>(filePath);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || artist != null) {
+      map['artist'] = Variable<String>(artist);
+    }
+    if (!nullToAbsent || album != null) {
+      map['album'] = Variable<String>(album);
+    }
+    if (!nullToAbsent || durationMs != null) {
+      map['duration_ms'] = Variable<int>(durationMs);
+    }
+    map['is_sound'] = Variable<bool>(isSound);
+    map['is_liked'] = Variable<bool>(isLiked);
+    map['play_count'] = Variable<int>(playCount);
+    if (!nullToAbsent || lastPlayedAt != null) {
+      map['last_played_at'] = Variable<DateTime>(lastPlayedAt);
+    }
+    return map;
+  }
+
+  TracksCompanion toCompanion(bool nullToAbsent) {
+    return TracksCompanion(
+      id: Value(id),
+      filePath: Value(filePath),
+      title: Value(title),
+      artist:
+          artist == null && nullToAbsent ? const Value.absent() : Value(artist),
+      album:
+          album == null && nullToAbsent ? const Value.absent() : Value(album),
+      durationMs: durationMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationMs),
+      isSound: Value(isSound),
+      isLiked: Value(isLiked),
+      playCount: Value(playCount),
+      lastPlayedAt: lastPlayedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastPlayedAt),
+    );
+  }
+
+  factory Track.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Track(
+      id: serializer.fromJson<String>(json['id']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+      title: serializer.fromJson<String>(json['title']),
+      artist: serializer.fromJson<String?>(json['artist']),
+      album: serializer.fromJson<String?>(json['album']),
+      durationMs: serializer.fromJson<int?>(json['durationMs']),
+      isSound: serializer.fromJson<bool>(json['isSound']),
+      isLiked: serializer.fromJson<bool>(json['isLiked']),
+      playCount: serializer.fromJson<int>(json['playCount']),
+      lastPlayedAt: serializer.fromJson<DateTime?>(json['lastPlayedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'filePath': serializer.toJson<String>(filePath),
+      'title': serializer.toJson<String>(title),
+      'artist': serializer.toJson<String?>(artist),
+      'album': serializer.toJson<String?>(album),
+      'durationMs': serializer.toJson<int?>(durationMs),
+      'isSound': serializer.toJson<bool>(isSound),
+      'isLiked': serializer.toJson<bool>(isLiked),
+      'playCount': serializer.toJson<int>(playCount),
+      'lastPlayedAt': serializer.toJson<DateTime?>(lastPlayedAt),
+    };
+  }
+
+  Track copyWith(
+          {String? id,
+          String? filePath,
+          String? title,
+          Value<String?> artist = const Value.absent(),
+          Value<String?> album = const Value.absent(),
+          Value<int?> durationMs = const Value.absent(),
+          bool? isSound,
+          bool? isLiked,
+          int? playCount,
+          Value<DateTime?> lastPlayedAt = const Value.absent()}) =>
+      Track(
+        id: id ?? this.id,
+        filePath: filePath ?? this.filePath,
+        title: title ?? this.title,
+        artist: artist.present ? artist.value : this.artist,
+        album: album.present ? album.value : this.album,
+        durationMs: durationMs.present ? durationMs.value : this.durationMs,
+        isSound: isSound ?? this.isSound,
+        isLiked: isLiked ?? this.isLiked,
+        playCount: playCount ?? this.playCount,
+        lastPlayedAt:
+            lastPlayedAt.present ? lastPlayedAt.value : this.lastPlayedAt,
+      );
+  Track copyWithCompanion(TracksCompanion data) {
+    return Track(
+      id: data.id.present ? data.id.value : this.id,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+      title: data.title.present ? data.title.value : this.title,
+      artist: data.artist.present ? data.artist.value : this.artist,
+      album: data.album.present ? data.album.value : this.album,
+      durationMs:
+          data.durationMs.present ? data.durationMs.value : this.durationMs,
+      isSound: data.isSound.present ? data.isSound.value : this.isSound,
+      isLiked: data.isLiked.present ? data.isLiked.value : this.isLiked,
+      playCount: data.playCount.present ? data.playCount.value : this.playCount,
+      lastPlayedAt: data.lastPlayedAt.present
+          ? data.lastPlayedAt.value
+          : this.lastPlayedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Track(')
+          ..write('id: $id, ')
+          ..write('filePath: $filePath, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('durationMs: $durationMs, ')
+          ..write('isSound: $isSound, ')
+          ..write('isLiked: $isLiked, ')
+          ..write('playCount: $playCount, ')
+          ..write('lastPlayedAt: $lastPlayedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, filePath, title, artist, album,
+      durationMs, isSound, isLiked, playCount, lastPlayedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Track &&
+          other.id == this.id &&
+          other.filePath == this.filePath &&
+          other.title == this.title &&
+          other.artist == this.artist &&
+          other.album == this.album &&
+          other.durationMs == this.durationMs &&
+          other.isSound == this.isSound &&
+          other.isLiked == this.isLiked &&
+          other.playCount == this.playCount &&
+          other.lastPlayedAt == this.lastPlayedAt);
+}
+
+class TracksCompanion extends UpdateCompanion<Track> {
+  final Value<String> id;
+  final Value<String> filePath;
+  final Value<String> title;
+  final Value<String?> artist;
+  final Value<String?> album;
+  final Value<int?> durationMs;
+  final Value<bool> isSound;
+  final Value<bool> isLiked;
+  final Value<int> playCount;
+  final Value<DateTime?> lastPlayedAt;
+  final Value<int> rowid;
+  const TracksCompanion({
+    this.id = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.title = const Value.absent(),
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    this.durationMs = const Value.absent(),
+    this.isSound = const Value.absent(),
+    this.isLiked = const Value.absent(),
+    this.playCount = const Value.absent(),
+    this.lastPlayedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TracksCompanion.insert({
+    required String id,
+    required String filePath,
+    required String title,
+    this.artist = const Value.absent(),
+    this.album = const Value.absent(),
+    this.durationMs = const Value.absent(),
+    this.isSound = const Value.absent(),
+    this.isLiked = const Value.absent(),
+    this.playCount = const Value.absent(),
+    this.lastPlayedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        filePath = Value(filePath),
+        title = Value(title);
+  static Insertable<Track> custom({
+    Expression<String>? id,
+    Expression<String>? filePath,
+    Expression<String>? title,
+    Expression<String>? artist,
+    Expression<String>? album,
+    Expression<int>? durationMs,
+    Expression<bool>? isSound,
+    Expression<bool>? isLiked,
+    Expression<int>? playCount,
+    Expression<DateTime>? lastPlayedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (filePath != null) 'file_path': filePath,
+      if (title != null) 'title': title,
+      if (artist != null) 'artist': artist,
+      if (album != null) 'album': album,
+      if (durationMs != null) 'duration_ms': durationMs,
+      if (isSound != null) 'is_sound': isSound,
+      if (isLiked != null) 'is_liked': isLiked,
+      if (playCount != null) 'play_count': playCount,
+      if (lastPlayedAt != null) 'last_played_at': lastPlayedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TracksCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? filePath,
+      Value<String>? title,
+      Value<String?>? artist,
+      Value<String?>? album,
+      Value<int?>? durationMs,
+      Value<bool>? isSound,
+      Value<bool>? isLiked,
+      Value<int>? playCount,
+      Value<DateTime?>? lastPlayedAt,
+      Value<int>? rowid}) {
+    return TracksCompanion(
+      id: id ?? this.id,
+      filePath: filePath ?? this.filePath,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      album: album ?? this.album,
+      durationMs: durationMs ?? this.durationMs,
+      isSound: isSound ?? this.isSound,
+      isLiked: isLiked ?? this.isLiked,
+      playCount: playCount ?? this.playCount,
+      lastPlayedAt: lastPlayedAt ?? this.lastPlayedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (artist.present) {
+      map['artist'] = Variable<String>(artist.value);
+    }
+    if (album.present) {
+      map['album'] = Variable<String>(album.value);
+    }
+    if (durationMs.present) {
+      map['duration_ms'] = Variable<int>(durationMs.value);
+    }
+    if (isSound.present) {
+      map['is_sound'] = Variable<bool>(isSound.value);
+    }
+    if (isLiked.present) {
+      map['is_liked'] = Variable<bool>(isLiked.value);
+    }
+    if (playCount.present) {
+      map['play_count'] = Variable<int>(playCount.value);
+    }
+    if (lastPlayedAt.present) {
+      map['last_played_at'] = Variable<DateTime>(lastPlayedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TracksCompanion(')
+          ..write('id: $id, ')
+          ..write('filePath: $filePath, ')
+          ..write('title: $title, ')
+          ..write('artist: $artist, ')
+          ..write('album: $album, ')
+          ..write('durationMs: $durationMs, ')
+          ..write('isSound: $isSound, ')
+          ..write('isLiked: $isLiked, ')
+          ..write('playCount: $playCount, ')
+          ..write('lastPlayedAt: $lastPlayedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ItemLoopConfigsTable extends ItemLoopConfigs
+    with TableInfo<$ItemLoopConfigsTable, ItemLoopConfigData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ItemLoopConfigsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
+  @override
+  late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
+      'item_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _modeMeta = const VerificationMeta('mode');
+  @override
+  late final GeneratedColumn<String> mode = GeneratedColumn<String>(
+      'mode', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+      'count', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _durationMsMeta =
+      const VerificationMeta('durationMs');
+  @override
+  late final GeneratedColumn<int> durationMs = GeneratedColumn<int>(
+      'duration_ms', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _abStartMsMeta =
+      const VerificationMeta('abStartMs');
+  @override
+  late final GeneratedColumn<int> abStartMs = GeneratedColumn<int>(
+      'ab_start_ms', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _abEndMsMeta =
+      const VerificationMeta('abEndMs');
+  @override
+  late final GeneratedColumn<int> abEndMs = GeneratedColumn<int>(
+      'ab_end_ms', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [itemId, mode, count, durationMs, abStartMs, abEndMs];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'item_loop_configs';
+  @override
+  VerificationContext validateIntegrity(Insertable<ItemLoopConfigData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('item_id')) {
+      context.handle(_itemIdMeta,
+          itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
+    } else if (isInserting) {
+      context.missing(_itemIdMeta);
+    }
+    if (data.containsKey('mode')) {
+      context.handle(
+          _modeMeta, mode.isAcceptableOrUnknown(data['mode']!, _modeMeta));
+    } else if (isInserting) {
+      context.missing(_modeMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+          _countMeta, count.isAcceptableOrUnknown(data['count']!, _countMeta));
+    }
+    if (data.containsKey('duration_ms')) {
+      context.handle(
+          _durationMsMeta,
+          durationMs.isAcceptableOrUnknown(
+              data['duration_ms']!, _durationMsMeta));
+    }
+    if (data.containsKey('ab_start_ms')) {
+      context.handle(
+          _abStartMsMeta,
+          abStartMs.isAcceptableOrUnknown(
+              data['ab_start_ms']!, _abStartMsMeta));
+    }
+    if (data.containsKey('ab_end_ms')) {
+      context.handle(_abEndMsMeta,
+          abEndMs.isAcceptableOrUnknown(data['ab_end_ms']!, _abEndMsMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {itemId};
+  @override
+  ItemLoopConfigData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ItemLoopConfigData(
+      itemId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}item_id'])!,
+      mode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}mode'])!,
+      count: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}count']),
+      durationMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}duration_ms']),
+      abStartMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ab_start_ms']),
+      abEndMs: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}ab_end_ms']),
+    );
+  }
+
+  @override
+  $ItemLoopConfigsTable createAlias(String alias) {
+    return $ItemLoopConfigsTable(attachedDatabase, alias);
+  }
+}
+
+class ItemLoopConfigData extends DataClass
+    implements Insertable<ItemLoopConfigData> {
+  final String itemId;
+  final String mode;
+  final int? count;
+  final int? durationMs;
+  final int? abStartMs;
+  final int? abEndMs;
+  const ItemLoopConfigData(
+      {required this.itemId,
+      required this.mode,
+      this.count,
+      this.durationMs,
+      this.abStartMs,
+      this.abEndMs});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['item_id'] = Variable<String>(itemId);
+    map['mode'] = Variable<String>(mode);
+    if (!nullToAbsent || count != null) {
+      map['count'] = Variable<int>(count);
+    }
+    if (!nullToAbsent || durationMs != null) {
+      map['duration_ms'] = Variable<int>(durationMs);
+    }
+    if (!nullToAbsent || abStartMs != null) {
+      map['ab_start_ms'] = Variable<int>(abStartMs);
+    }
+    if (!nullToAbsent || abEndMs != null) {
+      map['ab_end_ms'] = Variable<int>(abEndMs);
+    }
+    return map;
+  }
+
+  ItemLoopConfigsCompanion toCompanion(bool nullToAbsent) {
+    return ItemLoopConfigsCompanion(
+      itemId: Value(itemId),
+      mode: Value(mode),
+      count:
+          count == null && nullToAbsent ? const Value.absent() : Value(count),
+      durationMs: durationMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(durationMs),
+      abStartMs: abStartMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(abStartMs),
+      abEndMs: abEndMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(abEndMs),
+    );
+  }
+
+  factory ItemLoopConfigData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ItemLoopConfigData(
+      itemId: serializer.fromJson<String>(json['itemId']),
+      mode: serializer.fromJson<String>(json['mode']),
+      count: serializer.fromJson<int?>(json['count']),
+      durationMs: serializer.fromJson<int?>(json['durationMs']),
+      abStartMs: serializer.fromJson<int?>(json['abStartMs']),
+      abEndMs: serializer.fromJson<int?>(json['abEndMs']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'itemId': serializer.toJson<String>(itemId),
+      'mode': serializer.toJson<String>(mode),
+      'count': serializer.toJson<int?>(count),
+      'durationMs': serializer.toJson<int?>(durationMs),
+      'abStartMs': serializer.toJson<int?>(abStartMs),
+      'abEndMs': serializer.toJson<int?>(abEndMs),
+    };
+  }
+
+  ItemLoopConfigData copyWith(
+          {String? itemId,
+          String? mode,
+          Value<int?> count = const Value.absent(),
+          Value<int?> durationMs = const Value.absent(),
+          Value<int?> abStartMs = const Value.absent(),
+          Value<int?> abEndMs = const Value.absent()}) =>
+      ItemLoopConfigData(
+        itemId: itemId ?? this.itemId,
+        mode: mode ?? this.mode,
+        count: count.present ? count.value : this.count,
+        durationMs: durationMs.present ? durationMs.value : this.durationMs,
+        abStartMs: abStartMs.present ? abStartMs.value : this.abStartMs,
+        abEndMs: abEndMs.present ? abEndMs.value : this.abEndMs,
+      );
+  ItemLoopConfigData copyWithCompanion(ItemLoopConfigsCompanion data) {
+    return ItemLoopConfigData(
+      itemId: data.itemId.present ? data.itemId.value : this.itemId,
+      mode: data.mode.present ? data.mode.value : this.mode,
+      count: data.count.present ? data.count.value : this.count,
+      durationMs:
+          data.durationMs.present ? data.durationMs.value : this.durationMs,
+      abStartMs: data.abStartMs.present ? data.abStartMs.value : this.abStartMs,
+      abEndMs: data.abEndMs.present ? data.abEndMs.value : this.abEndMs,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ItemLoopConfigData(')
+          ..write('itemId: $itemId, ')
+          ..write('mode: $mode, ')
+          ..write('count: $count, ')
+          ..write('durationMs: $durationMs, ')
+          ..write('abStartMs: $abStartMs, ')
+          ..write('abEndMs: $abEndMs')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(itemId, mode, count, durationMs, abStartMs, abEndMs);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ItemLoopConfigData &&
+          other.itemId == this.itemId &&
+          other.mode == this.mode &&
+          other.count == this.count &&
+          other.durationMs == this.durationMs &&
+          other.abStartMs == this.abStartMs &&
+          other.abEndMs == this.abEndMs);
+}
+
+class ItemLoopConfigsCompanion extends UpdateCompanion<ItemLoopConfigData> {
+  final Value<String> itemId;
+  final Value<String> mode;
+  final Value<int?> count;
+  final Value<int?> durationMs;
+  final Value<int?> abStartMs;
+  final Value<int?> abEndMs;
+  final Value<int> rowid;
+  const ItemLoopConfigsCompanion({
+    this.itemId = const Value.absent(),
+    this.mode = const Value.absent(),
+    this.count = const Value.absent(),
+    this.durationMs = const Value.absent(),
+    this.abStartMs = const Value.absent(),
+    this.abEndMs = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ItemLoopConfigsCompanion.insert({
+    required String itemId,
+    required String mode,
+    this.count = const Value.absent(),
+    this.durationMs = const Value.absent(),
+    this.abStartMs = const Value.absent(),
+    this.abEndMs = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : itemId = Value(itemId),
+        mode = Value(mode);
+  static Insertable<ItemLoopConfigData> custom({
+    Expression<String>? itemId,
+    Expression<String>? mode,
+    Expression<int>? count,
+    Expression<int>? durationMs,
+    Expression<int>? abStartMs,
+    Expression<int>? abEndMs,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (itemId != null) 'item_id': itemId,
+      if (mode != null) 'mode': mode,
+      if (count != null) 'count': count,
+      if (durationMs != null) 'duration_ms': durationMs,
+      if (abStartMs != null) 'ab_start_ms': abStartMs,
+      if (abEndMs != null) 'ab_end_ms': abEndMs,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ItemLoopConfigsCompanion copyWith(
+      {Value<String>? itemId,
+      Value<String>? mode,
+      Value<int?>? count,
+      Value<int?>? durationMs,
+      Value<int?>? abStartMs,
+      Value<int?>? abEndMs,
+      Value<int>? rowid}) {
+    return ItemLoopConfigsCompanion(
+      itemId: itemId ?? this.itemId,
+      mode: mode ?? this.mode,
+      count: count ?? this.count,
+      durationMs: durationMs ?? this.durationMs,
+      abStartMs: abStartMs ?? this.abStartMs,
+      abEndMs: abEndMs ?? this.abEndMs,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (itemId.present) {
+      map['item_id'] = Variable<String>(itemId.value);
+    }
+    if (mode.present) {
+      map['mode'] = Variable<String>(mode.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (durationMs.present) {
+      map['duration_ms'] = Variable<int>(durationMs.value);
+    }
+    if (abStartMs.present) {
+      map['ab_start_ms'] = Variable<int>(abStartMs.value);
+    }
+    if (abEndMs.present) {
+      map['ab_end_ms'] = Variable<int>(abEndMs.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ItemLoopConfigsCompanion(')
+          ..write('itemId: $itemId, ')
+          ..write('mode: $mode, ')
+          ..write('count: $count, ')
+          ..write('durationMs: $durationMs, ')
+          ..write('abStartMs: $abStartMs, ')
+          ..write('abEndMs: $abEndMs, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MixesTable extends Mixes with TableInfo<$MixesTable, MixData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MixesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _noisePresetMeta =
+      const VerificationMeta('noisePreset');
+  @override
+  late final GeneratedColumn<String> noisePreset = GeneratedColumn<String>(
+      'noise_preset', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _noiseVolumeMeta =
+      const VerificationMeta('noiseVolume');
+  @override
+  late final GeneratedColumn<double> noiseVolume = GeneratedColumn<double>(
+      'noise_volume', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0.8));
+  static const VerificationMeta _trackIdMeta =
+      const VerificationMeta('trackId');
+  @override
+  late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
+      'track_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _trackVolumeMeta =
+      const VerificationMeta('trackVolume');
+  @override
+  late final GeneratedColumn<double> trackVolume = GeneratedColumn<double>(
+      'track_volume', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0.8));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, noisePreset, noiseVolume, trackId, trackVolume];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'mixes';
+  @override
+  VerificationContext validateIntegrity(Insertable<MixData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('noise_preset')) {
+      context.handle(
+          _noisePresetMeta,
+          noisePreset.isAcceptableOrUnknown(
+              data['noise_preset']!, _noisePresetMeta));
+    } else if (isInserting) {
+      context.missing(_noisePresetMeta);
+    }
+    if (data.containsKey('noise_volume')) {
+      context.handle(
+          _noiseVolumeMeta,
+          noiseVolume.isAcceptableOrUnknown(
+              data['noise_volume']!, _noiseVolumeMeta));
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(_trackIdMeta,
+          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    }
+    if (data.containsKey('track_volume')) {
+      context.handle(
+          _trackVolumeMeta,
+          trackVolume.isAcceptableOrUnknown(
+              data['track_volume']!, _trackVolumeMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MixData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MixData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      noisePreset: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}noise_preset'])!,
+      noiseVolume: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}noise_volume'])!,
+      trackId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}track_id']),
+      trackVolume: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}track_volume'])!,
+    );
+  }
+
+  @override
+  $MixesTable createAlias(String alias) {
+    return $MixesTable(attachedDatabase, alias);
+  }
+}
+
+class MixData extends DataClass implements Insertable<MixData> {
+  final String id;
+  final String name;
+  final String noisePreset;
+  final double noiseVolume;
+  final String? trackId;
+  final double trackVolume;
+  const MixData(
+      {required this.id,
+      required this.name,
+      required this.noisePreset,
+      required this.noiseVolume,
+      this.trackId,
+      required this.trackVolume});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['noise_preset'] = Variable<String>(noisePreset);
+    map['noise_volume'] = Variable<double>(noiseVolume);
+    if (!nullToAbsent || trackId != null) {
+      map['track_id'] = Variable<String>(trackId);
+    }
+    map['track_volume'] = Variable<double>(trackVolume);
+    return map;
+  }
+
+  MixesCompanion toCompanion(bool nullToAbsent) {
+    return MixesCompanion(
+      id: Value(id),
+      name: Value(name),
+      noisePreset: Value(noisePreset),
+      noiseVolume: Value(noiseVolume),
+      trackId: trackId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trackId),
+      trackVolume: Value(trackVolume),
+    );
+  }
+
+  factory MixData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MixData(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      noisePreset: serializer.fromJson<String>(json['noisePreset']),
+      noiseVolume: serializer.fromJson<double>(json['noiseVolume']),
+      trackId: serializer.fromJson<String?>(json['trackId']),
+      trackVolume: serializer.fromJson<double>(json['trackVolume']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'noisePreset': serializer.toJson<String>(noisePreset),
+      'noiseVolume': serializer.toJson<double>(noiseVolume),
+      'trackId': serializer.toJson<String?>(trackId),
+      'trackVolume': serializer.toJson<double>(trackVolume),
+    };
+  }
+
+  MixData copyWith(
+          {String? id,
+          String? name,
+          String? noisePreset,
+          double? noiseVolume,
+          Value<String?> trackId = const Value.absent(),
+          double? trackVolume}) =>
+      MixData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        noisePreset: noisePreset ?? this.noisePreset,
+        noiseVolume: noiseVolume ?? this.noiseVolume,
+        trackId: trackId.present ? trackId.value : this.trackId,
+        trackVolume: trackVolume ?? this.trackVolume,
+      );
+  MixData copyWithCompanion(MixesCompanion data) {
+    return MixData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      noisePreset:
+          data.noisePreset.present ? data.noisePreset.value : this.noisePreset,
+      noiseVolume:
+          data.noiseVolume.present ? data.noiseVolume.value : this.noiseVolume,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      trackVolume:
+          data.trackVolume.present ? data.trackVolume.value : this.trackVolume,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MixData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('noisePreset: $noisePreset, ')
+          ..write('noiseVolume: $noiseVolume, ')
+          ..write('trackId: $trackId, ')
+          ..write('trackVolume: $trackVolume')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, noisePreset, noiseVolume, trackId, trackVolume);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MixData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.noisePreset == this.noisePreset &&
+          other.noiseVolume == this.noiseVolume &&
+          other.trackId == this.trackId &&
+          other.trackVolume == this.trackVolume);
+}
+
+class MixesCompanion extends UpdateCompanion<MixData> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> noisePreset;
+  final Value<double> noiseVolume;
+  final Value<String?> trackId;
+  final Value<double> trackVolume;
+  final Value<int> rowid;
+  const MixesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.noisePreset = const Value.absent(),
+    this.noiseVolume = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.trackVolume = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MixesCompanion.insert({
+    required String id,
+    required String name,
+    required String noisePreset,
+    this.noiseVolume = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.trackVolume = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        noisePreset = Value(noisePreset);
+  static Insertable<MixData> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? noisePreset,
+    Expression<double>? noiseVolume,
+    Expression<String>? trackId,
+    Expression<double>? trackVolume,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (noisePreset != null) 'noise_preset': noisePreset,
+      if (noiseVolume != null) 'noise_volume': noiseVolume,
+      if (trackId != null) 'track_id': trackId,
+      if (trackVolume != null) 'track_volume': trackVolume,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MixesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? noisePreset,
+      Value<double>? noiseVolume,
+      Value<String?>? trackId,
+      Value<double>? trackVolume,
+      Value<int>? rowid}) {
+    return MixesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      noisePreset: noisePreset ?? this.noisePreset,
+      noiseVolume: noiseVolume ?? this.noiseVolume,
+      trackId: trackId ?? this.trackId,
+      trackVolume: trackVolume ?? this.trackVolume,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (noisePreset.present) {
+      map['noise_preset'] = Variable<String>(noisePreset.value);
+    }
+    if (noiseVolume.present) {
+      map['noise_volume'] = Variable<double>(noiseVolume.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<String>(trackId.value);
+    }
+    if (trackVolume.present) {
+      map['track_volume'] = Variable<double>(trackVolume.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MixesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('noisePreset: $noisePreset, ')
+          ..write('noiseVolume: $noiseVolume, ')
+          ..write('trackId: $trackId, ')
+          ..write('trackVolume: $trackVolume, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SavedMixesTable extends SavedMixes
+    with TableInfo<$SavedMixesTable, SavedMix> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SavedMixesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _noiseParamsJsonMeta =
+      const VerificationMeta('noiseParamsJson');
+  @override
+  late final GeneratedColumn<String> noiseParamsJson = GeneratedColumn<String>(
+      'noise_params_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _noiseVolumeMeta =
+      const VerificationMeta('noiseVolume');
+  @override
+  late final GeneratedColumn<double> noiseVolume = GeneratedColumn<double>(
+      'noise_volume', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0.8));
+  static const VerificationMeta _soundsJsonMeta =
+      const VerificationMeta('soundsJson');
+  @override
+  late final GeneratedColumn<String> soundsJson = GeneratedColumn<String>(
+      'sounds_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, noiseParamsJson, noiseVolume, soundsJson, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'saved_mixes';
+  @override
+  VerificationContext validateIntegrity(Insertable<SavedMix> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('noise_params_json')) {
+      context.handle(
+          _noiseParamsJsonMeta,
+          noiseParamsJson.isAcceptableOrUnknown(
+              data['noise_params_json']!, _noiseParamsJsonMeta));
+    } else if (isInserting) {
+      context.missing(_noiseParamsJsonMeta);
+    }
+    if (data.containsKey('noise_volume')) {
+      context.handle(
+          _noiseVolumeMeta,
+          noiseVolume.isAcceptableOrUnknown(
+              data['noise_volume']!, _noiseVolumeMeta));
+    }
+    if (data.containsKey('sounds_json')) {
+      context.handle(
+          _soundsJsonMeta,
+          soundsJson.isAcceptableOrUnknown(
+              data['sounds_json']!, _soundsJsonMeta));
+    } else if (isInserting) {
+      context.missing(_soundsJsonMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SavedMix map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SavedMix(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      noiseParamsJson: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}noise_params_json'])!,
+      noiseVolume: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}noise_volume'])!,
+      soundsJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}sounds_json'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $SavedMixesTable createAlias(String alias) {
+    return $SavedMixesTable(attachedDatabase, alias);
+  }
+}
+
+class SavedMix extends DataClass implements Insertable<SavedMix> {
+  final String id;
+  final String name;
+  final String noiseParamsJson;
+  final double noiseVolume;
+  final String soundsJson;
+  final DateTime createdAt;
+  const SavedMix(
+      {required this.id,
+      required this.name,
+      required this.noiseParamsJson,
+      required this.noiseVolume,
+      required this.soundsJson,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['name'] = Variable<String>(name);
+    map['noise_params_json'] = Variable<String>(noiseParamsJson);
+    map['noise_volume'] = Variable<double>(noiseVolume);
+    map['sounds_json'] = Variable<String>(soundsJson);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  SavedMixesCompanion toCompanion(bool nullToAbsent) {
+    return SavedMixesCompanion(
+      id: Value(id),
+      name: Value(name),
+      noiseParamsJson: Value(noiseParamsJson),
+      noiseVolume: Value(noiseVolume),
+      soundsJson: Value(soundsJson),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory SavedMix.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SavedMix(
+      id: serializer.fromJson<String>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      noiseParamsJson: serializer.fromJson<String>(json['noiseParamsJson']),
+      noiseVolume: serializer.fromJson<double>(json['noiseVolume']),
+      soundsJson: serializer.fromJson<String>(json['soundsJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'name': serializer.toJson<String>(name),
+      'noiseParamsJson': serializer.toJson<String>(noiseParamsJson),
+      'noiseVolume': serializer.toJson<double>(noiseVolume),
+      'soundsJson': serializer.toJson<String>(soundsJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  SavedMix copyWith(
+          {String? id,
+          String? name,
+          String? noiseParamsJson,
+          double? noiseVolume,
+          String? soundsJson,
+          DateTime? createdAt}) =>
+      SavedMix(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        noiseParamsJson: noiseParamsJson ?? this.noiseParamsJson,
+        noiseVolume: noiseVolume ?? this.noiseVolume,
+        soundsJson: soundsJson ?? this.soundsJson,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  SavedMix copyWithCompanion(SavedMixesCompanion data) {
+    return SavedMix(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      noiseParamsJson: data.noiseParamsJson.present
+          ? data.noiseParamsJson.value
+          : this.noiseParamsJson,
+      noiseVolume:
+          data.noiseVolume.present ? data.noiseVolume.value : this.noiseVolume,
+      soundsJson:
+          data.soundsJson.present ? data.soundsJson.value : this.soundsJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedMix(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('noiseParamsJson: $noiseParamsJson, ')
+          ..write('noiseVolume: $noiseVolume, ')
+          ..write('soundsJson: $soundsJson, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, name, noiseParamsJson, noiseVolume, soundsJson, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SavedMix &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.noiseParamsJson == this.noiseParamsJson &&
+          other.noiseVolume == this.noiseVolume &&
+          other.soundsJson == this.soundsJson &&
+          other.createdAt == this.createdAt);
+}
+
+class SavedMixesCompanion extends UpdateCompanion<SavedMix> {
+  final Value<String> id;
+  final Value<String> name;
+  final Value<String> noiseParamsJson;
+  final Value<double> noiseVolume;
+  final Value<String> soundsJson;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const SavedMixesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.noiseParamsJson = const Value.absent(),
+    this.noiseVolume = const Value.absent(),
+    this.soundsJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SavedMixesCompanion.insert({
+    required String id,
+    required String name,
+    required String noiseParamsJson,
+    this.noiseVolume = const Value.absent(),
+    required String soundsJson,
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  })  : id = Value(id),
+        name = Value(name),
+        noiseParamsJson = Value(noiseParamsJson),
+        soundsJson = Value(soundsJson);
+  static Insertable<SavedMix> custom({
+    Expression<String>? id,
+    Expression<String>? name,
+    Expression<String>? noiseParamsJson,
+    Expression<double>? noiseVolume,
+    Expression<String>? soundsJson,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (noiseParamsJson != null) 'noise_params_json': noiseParamsJson,
+      if (noiseVolume != null) 'noise_volume': noiseVolume,
+      if (soundsJson != null) 'sounds_json': soundsJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SavedMixesCompanion copyWith(
+      {Value<String>? id,
+      Value<String>? name,
+      Value<String>? noiseParamsJson,
+      Value<double>? noiseVolume,
+      Value<String>? soundsJson,
+      Value<DateTime>? createdAt,
+      Value<int>? rowid}) {
+    return SavedMixesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      noiseParamsJson: noiseParamsJson ?? this.noiseParamsJson,
+      noiseVolume: noiseVolume ?? this.noiseVolume,
+      soundsJson: soundsJson ?? this.soundsJson,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (noiseParamsJson.present) {
+      map['noise_params_json'] = Variable<String>(noiseParamsJson.value);
+    }
+    if (noiseVolume.present) {
+      map['noise_volume'] = Variable<double>(noiseVolume.value);
+    }
+    if (soundsJson.present) {
+      map['sounds_json'] = Variable<String>(soundsJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedMixesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('noiseParamsJson: $noiseParamsJson, ')
+          ..write('noiseVolume: $noiseVolume, ')
+          ..write('soundsJson: $soundsJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EqSettingsTableTable extends EqSettingsTable
+    with TableInfo<$EqSettingsTableTable, EqSettings> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EqSettingsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('global_eq'));
+  static const VerificationMeta _enabledMeta =
+      const VerificationMeta('enabled');
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+      'enabled', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("enabled" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _presetNameMeta =
+      const VerificationMeta('presetName');
+  @override
+  late final GeneratedColumn<String> presetName = GeneratedColumn<String>(
+      'preset_name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('Flat'));
+  static const VerificationMeta _bandsJsonMeta =
+      const VerificationMeta('bandsJson');
+  @override
+  late final GeneratedColumn<String> bandsJson = GeneratedColumn<String>(
+      'bands_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _crossfadeSecondsMeta =
+      const VerificationMeta('crossfadeSeconds');
+  @override
+  late final GeneratedColumn<double> crossfadeSeconds = GeneratedColumn<double>(
+      'crossfade_seconds', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(3.0));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, enabled, presetName, bandsJson, crossfadeSeconds];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'eq_settings_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<EqSettings> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(_enabledMeta,
+          enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta));
+    }
+    if (data.containsKey('preset_name')) {
+      context.handle(
+          _presetNameMeta,
+          presetName.isAcceptableOrUnknown(
+              data['preset_name']!, _presetNameMeta));
+    }
+    if (data.containsKey('bands_json')) {
+      context.handle(_bandsJsonMeta,
+          bandsJson.isAcceptableOrUnknown(data['bands_json']!, _bandsJsonMeta));
+    } else if (isInserting) {
+      context.missing(_bandsJsonMeta);
+    }
+    if (data.containsKey('crossfade_seconds')) {
+      context.handle(
+          _crossfadeSecondsMeta,
+          crossfadeSeconds.isAcceptableOrUnknown(
+              data['crossfade_seconds']!, _crossfadeSecondsMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EqSettings map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EqSettings(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      enabled: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}enabled'])!,
+      presetName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}preset_name'])!,
+      bandsJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}bands_json'])!,
+      crossfadeSeconds: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}crossfade_seconds'])!,
+    );
+  }
+
+  @override
+  $EqSettingsTableTable createAlias(String alias) {
+    return $EqSettingsTableTable(attachedDatabase, alias);
+  }
+}
+
+class EqSettings extends DataClass implements Insertable<EqSettings> {
+  final String id;
+  final bool enabled;
+  final String presetName;
+  final String bandsJson;
+  final double crossfadeSeconds;
+  const EqSettings(
+      {required this.id,
+      required this.enabled,
+      required this.presetName,
+      required this.bandsJson,
+      required this.crossfadeSeconds});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['enabled'] = Variable<bool>(enabled);
+    map['preset_name'] = Variable<String>(presetName);
+    map['bands_json'] = Variable<String>(bandsJson);
+    map['crossfade_seconds'] = Variable<double>(crossfadeSeconds);
+    return map;
+  }
+
+  EqSettingsTableCompanion toCompanion(bool nullToAbsent) {
+    return EqSettingsTableCompanion(
+      id: Value(id),
+      enabled: Value(enabled),
+      presetName: Value(presetName),
+      bandsJson: Value(bandsJson),
+      crossfadeSeconds: Value(crossfadeSeconds),
+    );
+  }
+
+  factory EqSettings.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EqSettings(
+      id: serializer.fromJson<String>(json['id']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
+      presetName: serializer.fromJson<String>(json['presetName']),
+      bandsJson: serializer.fromJson<String>(json['bandsJson']),
+      crossfadeSeconds: serializer.fromJson<double>(json['crossfadeSeconds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'enabled': serializer.toJson<bool>(enabled),
+      'presetName': serializer.toJson<String>(presetName),
+      'bandsJson': serializer.toJson<String>(bandsJson),
+      'crossfadeSeconds': serializer.toJson<double>(crossfadeSeconds),
+    };
+  }
+
+  EqSettings copyWith(
+          {String? id,
+          bool? enabled,
+          String? presetName,
+          String? bandsJson,
+          double? crossfadeSeconds}) =>
+      EqSettings(
+        id: id ?? this.id,
+        enabled: enabled ?? this.enabled,
+        presetName: presetName ?? this.presetName,
+        bandsJson: bandsJson ?? this.bandsJson,
+        crossfadeSeconds: crossfadeSeconds ?? this.crossfadeSeconds,
+      );
+  EqSettings copyWithCompanion(EqSettingsTableCompanion data) {
+    return EqSettings(
+      id: data.id.present ? data.id.value : this.id,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
+      presetName:
+          data.presetName.present ? data.presetName.value : this.presetName,
+      bandsJson: data.bandsJson.present ? data.bandsJson.value : this.bandsJson,
+      crossfadeSeconds: data.crossfadeSeconds.present
+          ? data.crossfadeSeconds.value
+          : this.crossfadeSeconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EqSettings(')
+          ..write('id: $id, ')
+          ..write('enabled: $enabled, ')
+          ..write('presetName: $presetName, ')
+          ..write('bandsJson: $bandsJson, ')
+          ..write('crossfadeSeconds: $crossfadeSeconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, enabled, presetName, bandsJson, crossfadeSeconds);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EqSettings &&
+          other.id == this.id &&
+          other.enabled == this.enabled &&
+          other.presetName == this.presetName &&
+          other.bandsJson == this.bandsJson &&
+          other.crossfadeSeconds == this.crossfadeSeconds);
+}
+
+class EqSettingsTableCompanion extends UpdateCompanion<EqSettings> {
+  final Value<String> id;
+  final Value<bool> enabled;
+  final Value<String> presetName;
+  final Value<String> bandsJson;
+  final Value<double> crossfadeSeconds;
+  final Value<int> rowid;
+  const EqSettingsTableCompanion({
+    this.id = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.presetName = const Value.absent(),
+    this.bandsJson = const Value.absent(),
+    this.crossfadeSeconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EqSettingsTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.enabled = const Value.absent(),
+    this.presetName = const Value.absent(),
+    required String bandsJson,
+    this.crossfadeSeconds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : bandsJson = Value(bandsJson);
+  static Insertable<EqSettings> custom({
+    Expression<String>? id,
+    Expression<bool>? enabled,
+    Expression<String>? presetName,
+    Expression<String>? bandsJson,
+    Expression<double>? crossfadeSeconds,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (enabled != null) 'enabled': enabled,
+      if (presetName != null) 'preset_name': presetName,
+      if (bandsJson != null) 'bands_json': bandsJson,
+      if (crossfadeSeconds != null) 'crossfade_seconds': crossfadeSeconds,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EqSettingsTableCompanion copyWith(
+      {Value<String>? id,
+      Value<bool>? enabled,
+      Value<String>? presetName,
+      Value<String>? bandsJson,
+      Value<double>? crossfadeSeconds,
+      Value<int>? rowid}) {
+    return EqSettingsTableCompanion(
+      id: id ?? this.id,
+      enabled: enabled ?? this.enabled,
+      presetName: presetName ?? this.presetName,
+      bandsJson: bandsJson ?? this.bandsJson,
+      crossfadeSeconds: crossfadeSeconds ?? this.crossfadeSeconds,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
+    }
+    if (presetName.present) {
+      map['preset_name'] = Variable<String>(presetName.value);
+    }
+    if (bandsJson.present) {
+      map['bands_json'] = Variable<String>(bandsJson.value);
+    }
+    if (crossfadeSeconds.present) {
+      map['crossfade_seconds'] = Variable<double>(crossfadeSeconds.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EqSettingsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('enabled: $enabled, ')
+          ..write('presetName: $presetName, ')
+          ..write('bandsJson: $bandsJson, ')
+          ..write('crossfadeSeconds: $crossfadeSeconds, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ListeningSessionsTable extends ListeningSessions
+    with TableInfo<$ListeningSessionsTable, ListeningSession> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ListeningSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _trackIdMeta =
+      const VerificationMeta('trackId');
+  @override
+  late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
+      'track_id', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isSoundMeta =
+      const VerificationMeta('isSound');
+  @override
+  late final GeneratedColumn<bool> isSound = GeneratedColumn<bool>(
+      'is_sound', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_sound" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _startTimeMeta =
+      const VerificationMeta('startTime');
+  @override
+  late final GeneratedColumn<DateTime> startTime = GeneratedColumn<DateTime>(
+      'start_time', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _endTimeMeta =
+      const VerificationMeta('endTime');
+  @override
+  late final GeneratedColumn<DateTime> endTime = GeneratedColumn<DateTime>(
+      'end_time', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _durationSecondsMeta =
+      const VerificationMeta('durationSeconds');
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+      'duration_seconds', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, trackId, title, isSound, startTime, endTime, durationSeconds];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'listening_sessions';
+  @override
+  VerificationContext validateIntegrity(Insertable<ListeningSession> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('track_id')) {
+      context.handle(_trackIdMeta,
+          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('is_sound')) {
+      context.handle(_isSoundMeta,
+          isSound.isAcceptableOrUnknown(data['is_sound']!, _isSoundMeta));
+    }
+    if (data.containsKey('start_time')) {
+      context.handle(_startTimeMeta,
+          startTime.isAcceptableOrUnknown(data['start_time']!, _startTimeMeta));
+    } else if (isInserting) {
+      context.missing(_startTimeMeta);
+    }
+    if (data.containsKey('end_time')) {
+      context.handle(_endTimeMeta,
+          endTime.isAcceptableOrUnknown(data['end_time']!, _endTimeMeta));
+    } else if (isInserting) {
+      context.missing(_endTimeMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+          _durationSecondsMeta,
+          durationSeconds.isAcceptableOrUnknown(
+              data['duration_seconds']!, _durationSecondsMeta));
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ListeningSession map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ListeningSession(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      trackId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}track_id']),
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      isSound: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_sound'])!,
+      startTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}start_time'])!,
+      endTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}end_time'])!,
+      durationSeconds: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}duration_seconds'])!,
+    );
+  }
+
+  @override
+  $ListeningSessionsTable createAlias(String alias) {
+    return $ListeningSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class ListeningSession extends DataClass
+    implements Insertable<ListeningSession> {
+  final int id;
+  final String? trackId;
+  final String title;
+  final bool isSound;
+  final DateTime startTime;
+  final DateTime endTime;
+  final int durationSeconds;
+  const ListeningSession(
+      {required this.id,
+      this.trackId,
+      required this.title,
+      required this.isSound,
+      required this.startTime,
+      required this.endTime,
+      required this.durationSeconds});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || trackId != null) {
+      map['track_id'] = Variable<String>(trackId);
+    }
+    map['title'] = Variable<String>(title);
+    map['is_sound'] = Variable<bool>(isSound);
+    map['start_time'] = Variable<DateTime>(startTime);
+    map['end_time'] = Variable<DateTime>(endTime);
+    map['duration_seconds'] = Variable<int>(durationSeconds);
+    return map;
+  }
+
+  ListeningSessionsCompanion toCompanion(bool nullToAbsent) {
+    return ListeningSessionsCompanion(
+      id: Value(id),
+      trackId: trackId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trackId),
+      title: Value(title),
+      isSound: Value(isSound),
+      startTime: Value(startTime),
+      endTime: Value(endTime),
+      durationSeconds: Value(durationSeconds),
+    );
+  }
+
+  factory ListeningSession.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ListeningSession(
+      id: serializer.fromJson<int>(json['id']),
+      trackId: serializer.fromJson<String?>(json['trackId']),
+      title: serializer.fromJson<String>(json['title']),
+      isSound: serializer.fromJson<bool>(json['isSound']),
+      startTime: serializer.fromJson<DateTime>(json['startTime']),
+      endTime: serializer.fromJson<DateTime>(json['endTime']),
+      durationSeconds: serializer.fromJson<int>(json['durationSeconds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trackId': serializer.toJson<String?>(trackId),
+      'title': serializer.toJson<String>(title),
+      'isSound': serializer.toJson<bool>(isSound),
+      'startTime': serializer.toJson<DateTime>(startTime),
+      'endTime': serializer.toJson<DateTime>(endTime),
+      'durationSeconds': serializer.toJson<int>(durationSeconds),
+    };
+  }
+
+  ListeningSession copyWith(
+          {int? id,
+          Value<String?> trackId = const Value.absent(),
+          String? title,
+          bool? isSound,
+          DateTime? startTime,
+          DateTime? endTime,
+          int? durationSeconds}) =>
+      ListeningSession(
+        id: id ?? this.id,
+        trackId: trackId.present ? trackId.value : this.trackId,
+        title: title ?? this.title,
+        isSound: isSound ?? this.isSound,
+        startTime: startTime ?? this.startTime,
+        endTime: endTime ?? this.endTime,
+        durationSeconds: durationSeconds ?? this.durationSeconds,
+      );
+  ListeningSession copyWithCompanion(ListeningSessionsCompanion data) {
+    return ListeningSession(
+      id: data.id.present ? data.id.value : this.id,
+      trackId: data.trackId.present ? data.trackId.value : this.trackId,
+      title: data.title.present ? data.title.value : this.title,
+      isSound: data.isSound.present ? data.isSound.value : this.isSound,
+      startTime: data.startTime.present ? data.startTime.value : this.startTime,
+      endTime: data.endTime.present ? data.endTime.value : this.endTime,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ListeningSession(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('isSound: $isSound, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('durationSeconds: $durationSeconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, trackId, title, isSound, startTime, endTime, durationSeconds);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ListeningSession &&
+          other.id == this.id &&
+          other.trackId == this.trackId &&
+          other.title == this.title &&
+          other.isSound == this.isSound &&
+          other.startTime == this.startTime &&
+          other.endTime == this.endTime &&
+          other.durationSeconds == this.durationSeconds);
+}
+
+class ListeningSessionsCompanion extends UpdateCompanion<ListeningSession> {
+  final Value<int> id;
+  final Value<String?> trackId;
+  final Value<String> title;
+  final Value<bool> isSound;
+  final Value<DateTime> startTime;
+  final Value<DateTime> endTime;
+  final Value<int> durationSeconds;
+  const ListeningSessionsCompanion({
+    this.id = const Value.absent(),
+    this.trackId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.isSound = const Value.absent(),
+    this.startTime = const Value.absent(),
+    this.endTime = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+  });
+  ListeningSessionsCompanion.insert({
+    this.id = const Value.absent(),
+    this.trackId = const Value.absent(),
+    required String title,
+    this.isSound = const Value.absent(),
+    required DateTime startTime,
+    required DateTime endTime,
+    required int durationSeconds,
+  })  : title = Value(title),
+        startTime = Value(startTime),
+        endTime = Value(endTime),
+        durationSeconds = Value(durationSeconds);
+  static Insertable<ListeningSession> custom({
+    Expression<int>? id,
+    Expression<String>? trackId,
+    Expression<String>? title,
+    Expression<bool>? isSound,
+    Expression<DateTime>? startTime,
+    Expression<DateTime>? endTime,
+    Expression<int>? durationSeconds,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trackId != null) 'track_id': trackId,
+      if (title != null) 'title': title,
+      if (isSound != null) 'is_sound': isSound,
+      if (startTime != null) 'start_time': startTime,
+      if (endTime != null) 'end_time': endTime,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+    });
+  }
+
+  ListeningSessionsCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? trackId,
+      Value<String>? title,
+      Value<bool>? isSound,
+      Value<DateTime>? startTime,
+      Value<DateTime>? endTime,
+      Value<int>? durationSeconds}) {
+    return ListeningSessionsCompanion(
+      id: id ?? this.id,
+      trackId: trackId ?? this.trackId,
+      title: title ?? this.title,
+      isSound: isSound ?? this.isSound,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trackId.present) {
+      map['track_id'] = Variable<String>(trackId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (isSound.present) {
+      map['is_sound'] = Variable<bool>(isSound.value);
+    }
+    if (startTime.present) {
+      map['start_time'] = Variable<DateTime>(startTime.value);
+    }
+    if (endTime.present) {
+      map['end_time'] = Variable<DateTime>(endTime.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ListeningSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('trackId: $trackId, ')
+          ..write('title: $title, ')
+          ..write('isSound: $isSound, ')
+          ..write('startTime: $startTime, ')
+          ..write('endTime: $endTime, ')
+          ..write('durationSeconds: $durationSeconds')
+          ..write(')'))
+        .toString();
+  }
+}
+
+abstract class _$AppDatabase extends GeneratedDatabase {
+  _$AppDatabase(QueryExecutor e) : super(e);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $TracksTable tracks = $TracksTable(this);
+  late final $ItemLoopConfigsTable itemLoopConfigs =
+      $ItemLoopConfigsTable(this);
+  late final $MixesTable mixes = $MixesTable(this);
+  late final $SavedMixesTable savedMixes = $SavedMixesTable(this);
+  late final $EqSettingsTableTable eqSettingsTable =
+      $EqSettingsTableTable(this);
+  late final $ListeningSessionsTable listeningSessions =
+      $ListeningSessionsTable(this);
+  @override
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        tracks,
+        itemLoopConfigs,
+        mixes,
+        savedMixes,
+        eqSettingsTable,
+        listeningSessions
+      ];
+}
+
+typedef $$TracksTableCreateCompanionBuilder = TracksCompanion Function({
+  required String id,
+  required String filePath,
+  required String title,
+  Value<String?> artist,
+  Value<String?> album,
+  Value<int?> durationMs,
+  Value<bool> isSound,
+  Value<bool> isLiked,
+  Value<int> playCount,
+  Value<DateTime?> lastPlayedAt,
+  Value<int> rowid,
+});
+typedef $$TracksTableUpdateCompanionBuilder = TracksCompanion Function({
+  Value<String> id,
+  Value<String> filePath,
+  Value<String> title,
+  Value<String?> artist,
+  Value<String?> album,
+  Value<int?> durationMs,
+  Value<bool> isSound,
+  Value<bool> isLiked,
+  Value<int> playCount,
+  Value<DateTime?> lastPlayedAt,
+  Value<int> rowid,
+});
+
+class $$TracksTableFilterComposer
+    extends Composer<_$AppDatabase, $TracksTable> {
+  $$TracksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+      column: $table.filePath, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get artist => $composableBuilder(
+      column: $table.artist, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get album => $composableBuilder(
+      column: $table.album, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get durationMs => $composableBuilder(
+      column: $table.durationMs, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isSound => $composableBuilder(
+      column: $table.isSound, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isLiked => $composableBuilder(
+      column: $table.isLiked, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get playCount => $composableBuilder(
+      column: $table.playCount, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastPlayedAt => $composableBuilder(
+      column: $table.lastPlayedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$TracksTableOrderingComposer
+    extends Composer<_$AppDatabase, $TracksTable> {
+  $$TracksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+      column: $table.filePath, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get artist => $composableBuilder(
+      column: $table.artist, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get album => $composableBuilder(
+      column: $table.album, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get durationMs => $composableBuilder(
+      column: $table.durationMs, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isSound => $composableBuilder(
+      column: $table.isSound, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isLiked => $composableBuilder(
+      column: $table.isLiked, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get playCount => $composableBuilder(
+      column: $table.playCount, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastPlayedAt => $composableBuilder(
+      column: $table.lastPlayedAt,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$TracksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TracksTable> {
+  $$TracksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get artist =>
+      $composableBuilder(column: $table.artist, builder: (column) => column);
+
+  GeneratedColumn<String> get album =>
+      $composableBuilder(column: $table.album, builder: (column) => column);
+
+  GeneratedColumn<int> get durationMs => $composableBuilder(
+      column: $table.durationMs, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSound =>
+      $composableBuilder(column: $table.isSound, builder: (column) => column);
+
+  GeneratedColumn<bool> get isLiked =>
+      $composableBuilder(column: $table.isLiked, builder: (column) => column);
+
+  GeneratedColumn<int> get playCount =>
+      $composableBuilder(column: $table.playCount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastPlayedAt => $composableBuilder(
+      column: $table.lastPlayedAt, builder: (column) => column);
+}
+
+class $$TracksTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TracksTable,
+    Track,
+    $$TracksTableFilterComposer,
+    $$TracksTableOrderingComposer,
+    $$TracksTableAnnotationComposer,
+    $$TracksTableCreateCompanionBuilder,
+    $$TracksTableUpdateCompanionBuilder,
+    (Track, BaseReferences<_$AppDatabase, $TracksTable, Track>),
+    Track,
+    PrefetchHooks Function()> {
+  $$TracksTableTableManager(_$AppDatabase db, $TracksTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TracksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TracksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TracksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> filePath = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String?> artist = const Value.absent(),
+            Value<String?> album = const Value.absent(),
+            Value<int?> durationMs = const Value.absent(),
+            Value<bool> isSound = const Value.absent(),
+            Value<bool> isLiked = const Value.absent(),
+            Value<int> playCount = const Value.absent(),
+            Value<DateTime?> lastPlayedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TracksCompanion(
+            id: id,
+            filePath: filePath,
+            title: title,
+            artist: artist,
+            album: album,
+            durationMs: durationMs,
+            isSound: isSound,
+            isLiked: isLiked,
+            playCount: playCount,
+            lastPlayedAt: lastPlayedAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String filePath,
+            required String title,
+            Value<String?> artist = const Value.absent(),
+            Value<String?> album = const Value.absent(),
+            Value<int?> durationMs = const Value.absent(),
+            Value<bool> isSound = const Value.absent(),
+            Value<bool> isLiked = const Value.absent(),
+            Value<int> playCount = const Value.absent(),
+            Value<DateTime?> lastPlayedAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              TracksCompanion.insert(
+            id: id,
+            filePath: filePath,
+            title: title,
+            artist: artist,
+            album: album,
+            durationMs: durationMs,
+            isSound: isSound,
+            isLiked: isLiked,
+            playCount: playCount,
+            lastPlayedAt: lastPlayedAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$TracksTable, Track>(table),
+                    BaseReferences<_$AppDatabase, $TracksTable, Track>(
+                        db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$TracksTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TracksTable,
+    Track,
+    $$TracksTableFilterComposer,
+    $$TracksTableOrderingComposer,
+    $$TracksTableAnnotationComposer,
+    $$TracksTableCreateCompanionBuilder,
+    $$TracksTableUpdateCompanionBuilder,
+    (Track, BaseReferences<_$AppDatabase, $TracksTable, Track>),
+    Track,
+    PrefetchHooks Function()>;
+typedef $$ItemLoopConfigsTableCreateCompanionBuilder = ItemLoopConfigsCompanion
+    Function({
+  required String itemId,
+  required String mode,
+  Value<int?> count,
+  Value<int?> durationMs,
+  Value<int?> abStartMs,
+  Value<int?> abEndMs,
+  Value<int> rowid,
+});
+typedef $$ItemLoopConfigsTableUpdateCompanionBuilder = ItemLoopConfigsCompanion
+    Function({
+  Value<String> itemId,
+  Value<String> mode,
+  Value<int?> count,
+  Value<int?> durationMs,
+  Value<int?> abStartMs,
+  Value<int?> abEndMs,
+  Value<int> rowid,
+});
+
+class $$ItemLoopConfigsTableFilterComposer
+    extends Composer<_$AppDatabase, $ItemLoopConfigsTable> {
+  $$ItemLoopConfigsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get itemId => $composableBuilder(
+      column: $table.itemId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get mode => $composableBuilder(
+      column: $table.mode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get count => $composableBuilder(
+      column: $table.count, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get durationMs => $composableBuilder(
+      column: $table.durationMs, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get abStartMs => $composableBuilder(
+      column: $table.abStartMs, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get abEndMs => $composableBuilder(
+      column: $table.abEndMs, builder: (column) => ColumnFilters(column));
+}
+
+class $$ItemLoopConfigsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ItemLoopConfigsTable> {
+  $$ItemLoopConfigsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get itemId => $composableBuilder(
+      column: $table.itemId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get mode => $composableBuilder(
+      column: $table.mode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get count => $composableBuilder(
+      column: $table.count, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get durationMs => $composableBuilder(
+      column: $table.durationMs, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get abStartMs => $composableBuilder(
+      column: $table.abStartMs, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get abEndMs => $composableBuilder(
+      column: $table.abEndMs, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ItemLoopConfigsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ItemLoopConfigsTable> {
+  $$ItemLoopConfigsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get itemId =>
+      $composableBuilder(column: $table.itemId, builder: (column) => column);
+
+  GeneratedColumn<String> get mode =>
+      $composableBuilder(column: $table.mode, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+
+  GeneratedColumn<int> get durationMs => $composableBuilder(
+      column: $table.durationMs, builder: (column) => column);
+
+  GeneratedColumn<int> get abStartMs =>
+      $composableBuilder(column: $table.abStartMs, builder: (column) => column);
+
+  GeneratedColumn<int> get abEndMs =>
+      $composableBuilder(column: $table.abEndMs, builder: (column) => column);
+}
+
+class $$ItemLoopConfigsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ItemLoopConfigsTable,
+    ItemLoopConfigData,
+    $$ItemLoopConfigsTableFilterComposer,
+    $$ItemLoopConfigsTableOrderingComposer,
+    $$ItemLoopConfigsTableAnnotationComposer,
+    $$ItemLoopConfigsTableCreateCompanionBuilder,
+    $$ItemLoopConfigsTableUpdateCompanionBuilder,
+    (
+      ItemLoopConfigData,
+      BaseReferences<_$AppDatabase, $ItemLoopConfigsTable, ItemLoopConfigData>
+    ),
+    ItemLoopConfigData,
+    PrefetchHooks Function()> {
+  $$ItemLoopConfigsTableTableManager(
+      _$AppDatabase db, $ItemLoopConfigsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ItemLoopConfigsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ItemLoopConfigsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ItemLoopConfigsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> itemId = const Value.absent(),
+            Value<String> mode = const Value.absent(),
+            Value<int?> count = const Value.absent(),
+            Value<int?> durationMs = const Value.absent(),
+            Value<int?> abStartMs = const Value.absent(),
+            Value<int?> abEndMs = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ItemLoopConfigsCompanion(
+            itemId: itemId,
+            mode: mode,
+            count: count,
+            durationMs: durationMs,
+            abStartMs: abStartMs,
+            abEndMs: abEndMs,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String itemId,
+            required String mode,
+            Value<int?> count = const Value.absent(),
+            Value<int?> durationMs = const Value.absent(),
+            Value<int?> abStartMs = const Value.absent(),
+            Value<int?> abEndMs = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              ItemLoopConfigsCompanion.insert(
+            itemId: itemId,
+            mode: mode,
+            count: count,
+            durationMs: durationMs,
+            abStartMs: abStartMs,
+            abEndMs: abEndMs,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$ItemLoopConfigsTable, ItemLoopConfigData>(
+                        table),
+                    BaseReferences<_$AppDatabase, $ItemLoopConfigsTable,
+                        ItemLoopConfigData>(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ItemLoopConfigsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ItemLoopConfigsTable,
+    ItemLoopConfigData,
+    $$ItemLoopConfigsTableFilterComposer,
+    $$ItemLoopConfigsTableOrderingComposer,
+    $$ItemLoopConfigsTableAnnotationComposer,
+    $$ItemLoopConfigsTableCreateCompanionBuilder,
+    $$ItemLoopConfigsTableUpdateCompanionBuilder,
+    (
+      ItemLoopConfigData,
+      BaseReferences<_$AppDatabase, $ItemLoopConfigsTable, ItemLoopConfigData>
+    ),
+    ItemLoopConfigData,
+    PrefetchHooks Function()>;
+typedef $$MixesTableCreateCompanionBuilder = MixesCompanion Function({
+  required String id,
+  required String name,
+  required String noisePreset,
+  Value<double> noiseVolume,
+  Value<String?> trackId,
+  Value<double> trackVolume,
+  Value<int> rowid,
+});
+typedef $$MixesTableUpdateCompanionBuilder = MixesCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> noisePreset,
+  Value<double> noiseVolume,
+  Value<String?> trackId,
+  Value<double> trackVolume,
+  Value<int> rowid,
+});
+
+class $$MixesTableFilterComposer extends Composer<_$AppDatabase, $MixesTable> {
+  $$MixesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get noisePreset => $composableBuilder(
+      column: $table.noisePreset, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get noiseVolume => $composableBuilder(
+      column: $table.noiseVolume, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get trackVolume => $composableBuilder(
+      column: $table.trackVolume, builder: (column) => ColumnFilters(column));
+}
+
+class $$MixesTableOrderingComposer
+    extends Composer<_$AppDatabase, $MixesTable> {
+  $$MixesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get noisePreset => $composableBuilder(
+      column: $table.noisePreset, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get noiseVolume => $composableBuilder(
+      column: $table.noiseVolume, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get trackVolume => $composableBuilder(
+      column: $table.trackVolume, builder: (column) => ColumnOrderings(column));
+}
+
+class $$MixesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MixesTable> {
+  $$MixesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get noisePreset => $composableBuilder(
+      column: $table.noisePreset, builder: (column) => column);
+
+  GeneratedColumn<double> get noiseVolume => $composableBuilder(
+      column: $table.noiseVolume, builder: (column) => column);
+
+  GeneratedColumn<String> get trackId =>
+      $composableBuilder(column: $table.trackId, builder: (column) => column);
+
+  GeneratedColumn<double> get trackVolume => $composableBuilder(
+      column: $table.trackVolume, builder: (column) => column);
+}
+
+class $$MixesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $MixesTable,
+    MixData,
+    $$MixesTableFilterComposer,
+    $$MixesTableOrderingComposer,
+    $$MixesTableAnnotationComposer,
+    $$MixesTableCreateCompanionBuilder,
+    $$MixesTableUpdateCompanionBuilder,
+    (MixData, BaseReferences<_$AppDatabase, $MixesTable, MixData>),
+    MixData,
+    PrefetchHooks Function()> {
+  $$MixesTableTableManager(_$AppDatabase db, $MixesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MixesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MixesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MixesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> noisePreset = const Value.absent(),
+            Value<double> noiseVolume = const Value.absent(),
+            Value<String?> trackId = const Value.absent(),
+            Value<double> trackVolume = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              MixesCompanion(
+            id: id,
+            name: name,
+            noisePreset: noisePreset,
+            noiseVolume: noiseVolume,
+            trackId: trackId,
+            trackVolume: trackVolume,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required String noisePreset,
+            Value<double> noiseVolume = const Value.absent(),
+            Value<String?> trackId = const Value.absent(),
+            Value<double> trackVolume = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              MixesCompanion.insert(
+            id: id,
+            name: name,
+            noisePreset: noisePreset,
+            noiseVolume: noiseVolume,
+            trackId: trackId,
+            trackVolume: trackVolume,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$MixesTable, MixData>(table),
+                    BaseReferences<_$AppDatabase, $MixesTable, MixData>(
+                        db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$MixesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $MixesTable,
+    MixData,
+    $$MixesTableFilterComposer,
+    $$MixesTableOrderingComposer,
+    $$MixesTableAnnotationComposer,
+    $$MixesTableCreateCompanionBuilder,
+    $$MixesTableUpdateCompanionBuilder,
+    (MixData, BaseReferences<_$AppDatabase, $MixesTable, MixData>),
+    MixData,
+    PrefetchHooks Function()>;
+typedef $$SavedMixesTableCreateCompanionBuilder = SavedMixesCompanion Function({
+  required String id,
+  required String name,
+  required String noiseParamsJson,
+  Value<double> noiseVolume,
+  required String soundsJson,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+typedef $$SavedMixesTableUpdateCompanionBuilder = SavedMixesCompanion Function({
+  Value<String> id,
+  Value<String> name,
+  Value<String> noiseParamsJson,
+  Value<double> noiseVolume,
+  Value<String> soundsJson,
+  Value<DateTime> createdAt,
+  Value<int> rowid,
+});
+
+class $$SavedMixesTableFilterComposer
+    extends Composer<_$AppDatabase, $SavedMixesTable> {
+  $$SavedMixesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get noiseParamsJson => $composableBuilder(
+      column: $table.noiseParamsJson,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get noiseVolume => $composableBuilder(
+      column: $table.noiseVolume, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get soundsJson => $composableBuilder(
+      column: $table.soundsJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$SavedMixesTableOrderingComposer
+    extends Composer<_$AppDatabase, $SavedMixesTable> {
+  $$SavedMixesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get noiseParamsJson => $composableBuilder(
+      column: $table.noiseParamsJson,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get noiseVolume => $composableBuilder(
+      column: $table.noiseVolume, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get soundsJson => $composableBuilder(
+      column: $table.soundsJson, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SavedMixesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SavedMixesTable> {
+  $$SavedMixesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get noiseParamsJson => $composableBuilder(
+      column: $table.noiseParamsJson, builder: (column) => column);
+
+  GeneratedColumn<double> get noiseVolume => $composableBuilder(
+      column: $table.noiseVolume, builder: (column) => column);
+
+  GeneratedColumn<String> get soundsJson => $composableBuilder(
+      column: $table.soundsJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$SavedMixesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SavedMixesTable,
+    SavedMix,
+    $$SavedMixesTableFilterComposer,
+    $$SavedMixesTableOrderingComposer,
+    $$SavedMixesTableAnnotationComposer,
+    $$SavedMixesTableCreateCompanionBuilder,
+    $$SavedMixesTableUpdateCompanionBuilder,
+    (SavedMix, BaseReferences<_$AppDatabase, $SavedMixesTable, SavedMix>),
+    SavedMix,
+    PrefetchHooks Function()> {
+  $$SavedMixesTableTableManager(_$AppDatabase db, $SavedMixesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SavedMixesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SavedMixesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SavedMixesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> noiseParamsJson = const Value.absent(),
+            Value<double> noiseVolume = const Value.absent(),
+            Value<String> soundsJson = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SavedMixesCompanion(
+            id: id,
+            name: name,
+            noiseParamsJson: noiseParamsJson,
+            noiseVolume: noiseVolume,
+            soundsJson: soundsJson,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            required String id,
+            required String name,
+            required String noiseParamsJson,
+            Value<double> noiseVolume = const Value.absent(),
+            required String soundsJson,
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SavedMixesCompanion.insert(
+            id: id,
+            name: name,
+            noiseParamsJson: noiseParamsJson,
+            noiseVolume: noiseVolume,
+            soundsJson: soundsJson,
+            createdAt: createdAt,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$SavedMixesTable, SavedMix>(table),
+                    BaseReferences<_$AppDatabase, $SavedMixesTable, SavedMix>(
+                        db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SavedMixesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SavedMixesTable,
+    SavedMix,
+    $$SavedMixesTableFilterComposer,
+    $$SavedMixesTableOrderingComposer,
+    $$SavedMixesTableAnnotationComposer,
+    $$SavedMixesTableCreateCompanionBuilder,
+    $$SavedMixesTableUpdateCompanionBuilder,
+    (SavedMix, BaseReferences<_$AppDatabase, $SavedMixesTable, SavedMix>),
+    SavedMix,
+    PrefetchHooks Function()>;
+typedef $$EqSettingsTableTableCreateCompanionBuilder = EqSettingsTableCompanion
+    Function({
+  Value<String> id,
+  Value<bool> enabled,
+  Value<String> presetName,
+  required String bandsJson,
+  Value<double> crossfadeSeconds,
+  Value<int> rowid,
+});
+typedef $$EqSettingsTableTableUpdateCompanionBuilder = EqSettingsTableCompanion
+    Function({
+  Value<String> id,
+  Value<bool> enabled,
+  Value<String> presetName,
+  Value<String> bandsJson,
+  Value<double> crossfadeSeconds,
+  Value<int> rowid,
+});
+
+class $$EqSettingsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $EqSettingsTableTable> {
+  $$EqSettingsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+      column: $table.enabled, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get presetName => $composableBuilder(
+      column: $table.presetName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get bandsJson => $composableBuilder(
+      column: $table.bandsJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get crossfadeSeconds => $composableBuilder(
+      column: $table.crossfadeSeconds,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$EqSettingsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $EqSettingsTableTable> {
+  $$EqSettingsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+      column: $table.enabled, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get presetName => $composableBuilder(
+      column: $table.presetName, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get bandsJson => $composableBuilder(
+      column: $table.bandsJson, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get crossfadeSeconds => $composableBuilder(
+      column: $table.crossfadeSeconds,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$EqSettingsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $EqSettingsTableTable> {
+  $$EqSettingsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
+
+  GeneratedColumn<String> get presetName => $composableBuilder(
+      column: $table.presetName, builder: (column) => column);
+
+  GeneratedColumn<String> get bandsJson =>
+      $composableBuilder(column: $table.bandsJson, builder: (column) => column);
+
+  GeneratedColumn<double> get crossfadeSeconds => $composableBuilder(
+      column: $table.crossfadeSeconds, builder: (column) => column);
+}
+
+class $$EqSettingsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $EqSettingsTableTable,
+    EqSettings,
+    $$EqSettingsTableTableFilterComposer,
+    $$EqSettingsTableTableOrderingComposer,
+    $$EqSettingsTableTableAnnotationComposer,
+    $$EqSettingsTableTableCreateCompanionBuilder,
+    $$EqSettingsTableTableUpdateCompanionBuilder,
+    (
+      EqSettings,
+      BaseReferences<_$AppDatabase, $EqSettingsTableTable, EqSettings>
+    ),
+    EqSettings,
+    PrefetchHooks Function()> {
+  $$EqSettingsTableTableTableManager(
+      _$AppDatabase db, $EqSettingsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EqSettingsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EqSettingsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EqSettingsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<bool> enabled = const Value.absent(),
+            Value<String> presetName = const Value.absent(),
+            Value<String> bandsJson = const Value.absent(),
+            Value<double> crossfadeSeconds = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              EqSettingsTableCompanion(
+            id: id,
+            enabled: enabled,
+            presetName: presetName,
+            bandsJson: bandsJson,
+            crossfadeSeconds: crossfadeSeconds,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<bool> enabled = const Value.absent(),
+            Value<String> presetName = const Value.absent(),
+            required String bandsJson,
+            Value<double> crossfadeSeconds = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              EqSettingsTableCompanion.insert(
+            id: id,
+            enabled: enabled,
+            presetName: presetName,
+            bandsJson: bandsJson,
+            crossfadeSeconds: crossfadeSeconds,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$EqSettingsTableTable, EqSettings>(table),
+                    BaseReferences<_$AppDatabase, $EqSettingsTableTable,
+                        EqSettings>(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$EqSettingsTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $EqSettingsTableTable,
+    EqSettings,
+    $$EqSettingsTableTableFilterComposer,
+    $$EqSettingsTableTableOrderingComposer,
+    $$EqSettingsTableTableAnnotationComposer,
+    $$EqSettingsTableTableCreateCompanionBuilder,
+    $$EqSettingsTableTableUpdateCompanionBuilder,
+    (
+      EqSettings,
+      BaseReferences<_$AppDatabase, $EqSettingsTableTable, EqSettings>
+    ),
+    EqSettings,
+    PrefetchHooks Function()>;
+typedef $$ListeningSessionsTableCreateCompanionBuilder
+    = ListeningSessionsCompanion Function({
+  Value<int> id,
+  Value<String?> trackId,
+  required String title,
+  Value<bool> isSound,
+  required DateTime startTime,
+  required DateTime endTime,
+  required int durationSeconds,
+});
+typedef $$ListeningSessionsTableUpdateCompanionBuilder
+    = ListeningSessionsCompanion Function({
+  Value<int> id,
+  Value<String?> trackId,
+  Value<String> title,
+  Value<bool> isSound,
+  Value<DateTime> startTime,
+  Value<DateTime> endTime,
+  Value<int> durationSeconds,
+});
+
+class $$ListeningSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $ListeningSessionsTable> {
+  $$ListeningSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isSound => $composableBuilder(
+      column: $table.isSound, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get startTime => $composableBuilder(
+      column: $table.startTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get endTime => $composableBuilder(
+      column: $table.endTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+      column: $table.durationSeconds,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$ListeningSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ListeningSessionsTable> {
+  $$ListeningSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get trackId => $composableBuilder(
+      column: $table.trackId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get title => $composableBuilder(
+      column: $table.title, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isSound => $composableBuilder(
+      column: $table.isSound, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get startTime => $composableBuilder(
+      column: $table.startTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get endTime => $composableBuilder(
+      column: $table.endTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+      column: $table.durationSeconds,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$ListeningSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ListeningSessionsTable> {
+  $$ListeningSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trackId =>
+      $composableBuilder(column: $table.trackId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<bool> get isSound =>
+      $composableBuilder(column: $table.isSound, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startTime =>
+      $composableBuilder(column: $table.startTime, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endTime =>
+      $composableBuilder(column: $table.endTime, builder: (column) => column);
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+      column: $table.durationSeconds, builder: (column) => column);
+}
+
+class $$ListeningSessionsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ListeningSessionsTable,
+    ListeningSession,
+    $$ListeningSessionsTableFilterComposer,
+    $$ListeningSessionsTableOrderingComposer,
+    $$ListeningSessionsTableAnnotationComposer,
+    $$ListeningSessionsTableCreateCompanionBuilder,
+    $$ListeningSessionsTableUpdateCompanionBuilder,
+    (
+      ListeningSession,
+      BaseReferences<_$AppDatabase, $ListeningSessionsTable, ListeningSession>
+    ),
+    ListeningSession,
+    PrefetchHooks Function()> {
+  $$ListeningSessionsTableTableManager(
+      _$AppDatabase db, $ListeningSessionsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ListeningSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ListeningSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ListeningSessionsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> trackId = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<bool> isSound = const Value.absent(),
+            Value<DateTime> startTime = const Value.absent(),
+            Value<DateTime> endTime = const Value.absent(),
+            Value<int> durationSeconds = const Value.absent(),
+          }) =>
+              ListeningSessionsCompanion(
+            id: id,
+            trackId: trackId,
+            title: title,
+            isSound: isSound,
+            startTime: startTime,
+            endTime: endTime,
+            durationSeconds: durationSeconds,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String?> trackId = const Value.absent(),
+            required String title,
+            Value<bool> isSound = const Value.absent(),
+            required DateTime startTime,
+            required DateTime endTime,
+            required int durationSeconds,
+          }) =>
+              ListeningSessionsCompanion.insert(
+            id: id,
+            trackId: trackId,
+            title: title,
+            isSound: isSound,
+            startTime: startTime,
+            endTime: endTime,
+            durationSeconds: durationSeconds,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable<$ListeningSessionsTable, ListeningSession>(
+                        table),
+                    BaseReferences<_$AppDatabase, $ListeningSessionsTable,
+                        ListeningSession>(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ListeningSessionsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ListeningSessionsTable,
+    ListeningSession,
+    $$ListeningSessionsTableFilterComposer,
+    $$ListeningSessionsTableOrderingComposer,
+    $$ListeningSessionsTableAnnotationComposer,
+    $$ListeningSessionsTableCreateCompanionBuilder,
+    $$ListeningSessionsTableUpdateCompanionBuilder,
+    (
+      ListeningSession,
+      BaseReferences<_$AppDatabase, $ListeningSessionsTable, ListeningSession>
+    ),
+    ListeningSession,
+    PrefetchHooks Function()>;
+
+class $AppDatabaseManager {
+  final _$AppDatabase _db;
+  $AppDatabaseManager(this._db);
+  $$TracksTableTableManager get tracks =>
+      $$TracksTableTableManager(_db, _db.tracks);
+  $$ItemLoopConfigsTableTableManager get itemLoopConfigs =>
+      $$ItemLoopConfigsTableTableManager(_db, _db.itemLoopConfigs);
+  $$MixesTableTableManager get mixes =>
+      $$MixesTableTableManager(_db, _db.mixes);
+  $$SavedMixesTableTableManager get savedMixes =>
+      $$SavedMixesTableTableManager(_db, _db.savedMixes);
+  $$EqSettingsTableTableTableManager get eqSettingsTable =>
+      $$EqSettingsTableTableTableManager(_db, _db.eqSettingsTable);
+  $$ListeningSessionsTableTableManager get listeningSessions =>
+      $$ListeningSessionsTableTableManager(_db, _db.listeningSessions);
+}

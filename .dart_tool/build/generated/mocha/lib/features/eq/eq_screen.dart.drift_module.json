@@ -1,0 +1,9 @@
+{
+  "elements": {},
+  "imports": [
+    "package:flutter/material.dart",
+    "package:flutter_riverpod/flutter_riverpod.dart",
+    "package:mocha/domain/eq_config.dart",
+    "package:mocha/features/eq/eq_controller.dart"
+  ]
+}

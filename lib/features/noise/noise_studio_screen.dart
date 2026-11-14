@@ -287,8 +287,9 @@ class _NoiseStudioScreenState extends ConsumerState<NoiseStudioScreen>
         ),
       ),
     ),
-  );
-  }
+  ),
+);
+}
 
   Widget _buildSliderRow({
     required BuildContext context,

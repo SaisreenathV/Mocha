@@ -1,0 +1,7 @@
+{
+  "elements": {},
+  "imports": [
+    "package:mocha/audio/dsp/brown_noise_synthesizer.dart",
+    "package:mocha/domain/noise_params.dart"
+  ]
+}

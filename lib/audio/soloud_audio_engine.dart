@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:isolate';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import '../domain/audio_engine.dart';
@@ -54,14 +55,9 @@ class SoLoudAudioEngine implements AudioEngine {
   Future<void> _initGlobalEq() async {
     if (_eqInitialized) return;
     try {
-      SoLoud.instance.filters.addFilter(FilterType.parametricEq);
+      SoLoud.instance.filters.equalizerFilter.activate();
       _eqInitialized = true;
-    } catch (_) {
-      try {
-        SoLoud.instance.filters.addFilter(FilterType.equalizerFilter);
-        _eqInitialized = true;
-      } catch (_) {}
-    }
+    } catch (_) {}
   }
 
   @override
@@ -79,7 +75,7 @@ class SoLoudAudioEngine implements AudioEngine {
     await stopAllLayeredSounds();
     await _positionController.close();
     if (SoLoud.instance.isInitialized) {
-      await SoLoud.instance.deinit();
+      SoLoud.instance.deinit();
     }
   }
 
@@ -361,20 +357,15 @@ class SoLoudAudioEngine implements AudioEngine {
 
     await init();
     try {
-      SoLoud.instance.filters.setFilterParameter(
-        FilterType.parametricEq.index,
-        bandIndex,
-        gainDb,
-      );
-    } catch (_) {
-      try {
-        SoLoud.instance.filters.setFilterParameter(
-          FilterType.equalizerFilter.index,
-          bandIndex,
-          gainDb,
-        );
-      } catch (_) {}
-    }
+      final eq = SoLoud.instance.filters.equalizerFilter;
+      if (!eq.isActive) eq.activate();
+      final linearGain = math.pow(10.0, gainDb / 20.0).toDouble().clamp(0.0, 4.0);
+      final bands = [
+        eq.band1, eq.band2, eq.band3, eq.band4,
+        eq.band5, eq.band6, eq.band7, eq.band8,
+      ];
+      bands[bandIndex].value = linearGain;
+    } catch (_) {}
   }
 
   @override
@@ -388,19 +379,15 @@ class SoLoudAudioEngine implements AudioEngine {
   Future<void> setEqEnabled(bool enabled) async {
     _eqEnabled = enabled;
     await init();
-    if (!enabled) {
-      for (int i = 0; i < 8; i++) {
-        try {
-          SoLoud.instance.filters.setFilterParameter(
-            FilterType.parametricEq.index,
-            i,
-            0.0,
-          );
-        } catch (_) {}
+    try {
+      final eq = SoLoud.instance.filters.equalizerFilter;
+      if (enabled) {
+        if (!eq.isActive) eq.activate();
+        await applyEqBands(_eqBands);
+      } else {
+        if (eq.isActive) eq.deactivate();
       }
-    } else {
-      await applyEqBands(_eqBands);
-    }
+    } catch (_) {}
   }
 
   @override
