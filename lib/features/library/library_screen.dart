@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../audio/loop_controller.dart';
 import '../../data/database.dart';
 import '../../data/providers.dart';
+import '../../domain/loop_config.dart';
 import '../player/player_controller.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
@@ -83,8 +85,10 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   Widget build(BuildContext context) {
     final tracksAsync = ref.watch(tracksStreamProvider(_query));
     final db = ref.read(databaseProvider);
+    final loopController = ref.read(loopControllerProvider);
     final playerController = ref.read(playerControllerProvider.notifier);
     final activeTrack = ref.watch(playerControllerProvider).currentTrack;
+    final activeLoopMode = ref.watch(activeLoopModeProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -162,7 +166,11 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                     final isCurrent = activeTrack?.id == track.id;
 
                     return ListTile(
-                      onTap: () => playerController.playTrack(track),
+                      onTap: () async {
+                        await playerController.playTrack(track);
+                        final mode = await loopController.getLoopMode(track.id, isSound: track.isSound);
+                        ref.read(activeLoopModeProvider.notifier).state = mode;
+                      },
                       selected: isCurrent,
                       selectedTileColor: theme.colorScheme.surfaceContainerHigh.withOpacity(0.5),
                       leading: CircleAvatar(
@@ -195,10 +203,37 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      trailing: FilterChip(
-                        label: Text(track.isSound ? 'Sound' : 'Song'),
-                        selected: track.isSound,
-                        onSelected: (_) => db.toggleIsSound(track.id, track.isSound),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.all_inclusive_rounded),
+                            tooltip: 'Loop this sound',
+                            onPressed: () async {
+                              final next = await loopController.toggleLoop(track.id, isSound: track.isSound);
+                              if (isCurrent) {
+                                ref.read(activeLoopModeProvider.notifier).state = next;
+                              }
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      next == LoopMode.forever
+                                          ? 'Looping "${track.title}" forever'
+                                          : 'Loop disabled for "${track.title}"',
+                                    ),
+                                    duration: const Duration(seconds: 1),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                          FilterChip(
+                            label: Text(track.isSound ? 'Sound' : 'Song'),
+                            selected: track.isSound,
+                            onSelected: (_) => db.toggleIsSound(track.id, track.isSound),
+                          ),
+                        ],
                       ),
                     );
                   },

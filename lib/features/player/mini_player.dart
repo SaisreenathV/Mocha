@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../audio/loop_controller.dart';
+import '../../domain/loop_config.dart';
 import 'now_playing_screen.dart';
 import 'player_controller.dart';
 
@@ -10,6 +12,8 @@ class MiniPlayer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(playerControllerProvider);
     final controller = ref.read(playerControllerProvider.notifier);
+    final loopController = ref.read(loopControllerProvider);
+    final activeLoopMode = ref.watch(activeLoopModeProvider);
     final theme = Theme.of(context);
 
     final track = state.currentTrack;
@@ -18,6 +22,7 @@ class MiniPlayer extends ConsumerWidget {
     final totalMs = state.duration.inMilliseconds;
     final currentMs = state.position.inMilliseconds;
     final progress = totalMs > 0 ? (currentMs / totalMs).clamp(0.0, 1.0) : 0.0;
+    final isLoopingForever = activeLoopMode == LoopMode.forever;
 
     return Container(
       decoration: BoxDecoration(
@@ -67,12 +72,29 @@ class MiniPlayer extends ConsumerWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            trailing: IconButton(
-              icon: Icon(
-                state.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                size: 30,
-              ),
-              onPressed: () => controller.togglePlay(),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    isLoopingForever ? Icons.repeat_one_rounded : Icons.repeat_rounded,
+                    size: 24,
+                    color: isLoopingForever ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                  ),
+                  tooltip: isLoopingForever ? 'Looping forever' : 'Loop off',
+                  onPressed: () async {
+                    final next = await loopController.toggleLoop(track.id, isSound: track.isSound);
+                    ref.read(activeLoopModeProvider.notifier).state = next;
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    state.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                    size: 30,
+                  ),
+                  onPressed: () => controller.togglePlay(),
+                ),
+              ],
             ),
           ),
         ],

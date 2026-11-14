@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../audio/loop_controller.dart';
+import '../../domain/loop_config.dart';
 import 'player_controller.dart';
 
 class NowPlayingScreen extends ConsumerWidget {
@@ -15,6 +17,8 @@ class NowPlayingScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(playerControllerProvider);
     final controller = ref.read(playerControllerProvider.notifier);
+    final loopController = ref.read(loopControllerProvider);
+    final activeLoopMode = ref.watch(activeLoopModeProvider);
     final theme = Theme.of(context);
     final track = state.currentTrack;
 
@@ -24,6 +28,7 @@ class NowPlayingScreen extends ConsumerWidget {
 
     final totalMs = state.duration.inMilliseconds.toDouble();
     final currentMs = state.position.inMilliseconds.toDouble().clamp(0.0, totalMs > 0 ? totalMs : 1.0);
+    final isLoopingForever = activeLoopMode == LoopMode.forever;
 
     return Scaffold(
       appBar: AppBar(
@@ -103,7 +108,7 @@ class NowPlayingScreen extends ConsumerWidget {
                 ],
               ),
 
-              // Controls (Speed, Play/Pause)
+              // Controls (Speed, Loop, Play/Pause, Forward)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -114,6 +119,18 @@ class NowPlayingScreen extends ConsumerWidget {
                       controller.setSpeed(speeds[nextIdx]);
                     },
                     child: Text('${state.speed}x', style: theme.textTheme.titleMedium),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      isLoopingForever ? Icons.repeat_one_rounded : Icons.repeat_rounded,
+                      size: 28,
+                      color: isLoopingForever ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                    ),
+                    tooltip: isLoopingForever ? 'Looping forever' : 'Loop off',
+                    onPressed: () async {
+                      final next = await loopController.toggleLoop(track.id, isSound: track.isSound);
+                      ref.read(activeLoopModeProvider.notifier).state = next;
+                    },
                   ),
                   Material(
                     color: theme.colorScheme.primary,
