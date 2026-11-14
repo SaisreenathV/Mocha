@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../audio/loop_controller.dart';
 import '../../features/player/mini_player.dart';
 import '../../features/player/player_controller.dart';
+import '../../features/stats/session_recorder.dart';
 
 class AdaptiveShell extends ConsumerWidget {
   final Widget child;
@@ -93,6 +94,7 @@ class AdaptiveShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(sessionRecorderProvider);
     final path = GoRouterState.of(context).uri.path;
     final isWide = MediaQuery.sizeOf(context).width >= 700;
 

@@ -7,6 +7,7 @@ import 'features/library/library_screen.dart';
 import 'features/mixes/mixes_screen.dart';
 import 'features/noise/noise_studio_screen.dart';
 import 'features/placeholder_screen.dart';
+import 'features/stats/stats_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -37,7 +38,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/stats',
-            builder: (context, state) => const PlaceholderScreen(title: 'Stats'),
+            builder: (context, state) => const StatsScreen(),
           ),
           GoRoute(
             path: '/settings',
