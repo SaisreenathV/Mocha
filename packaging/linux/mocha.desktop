@@ -2,11 +2,13 @@
 Name=Mocha
 GenericName=Brown Noise & Audio Player
 Comment=Offline brown noise generator and local audio player with loop controls
-Exec=mocha %U
+Exec=/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/release/bundle/mocha %U
+Path=/home/saisreenath/Desktop/Projects/cuBRm/build/linux/x64/release/bundle
 Icon=mocha
 Terminal=false
 Type=Application
 Categories=AudioVideo;Audio;Player;Music;
 Keywords=Audio;Music;Noise;Brown;Sound;Player;Offline;
 MimeType=audio/mpeg;audio/x-wav;audio/flac;audio/ogg;audio/mp4;audio/aac;audio/x-matroska;
-StartupWMClass=mocha
+StartupWMClass=com.example.mocha
+StartupNotify=true
