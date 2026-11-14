@@ -1,107 +1,217 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../audio/providers.dart';
 import '../../data/database.dart';
 import '../../data/providers.dart';
-import '../../domain/mix_model.dart';
+import '../../domain/audio_engine.dart';
 import '../../domain/noise_params.dart';
+import '../../domain/saved_mix.dart';
 import '../noise/noise_controller.dart';
-import '../player/player_controller.dart';
 
 class MixState {
-  final SoundscapeMix? currentMix;
+  final SavedMix? activeSavedMix;
   final bool isPlaying;
+  final NoiseParams currentNoiseParams;
   final double noiseVolume;
-  final double trackVolume;
+  final List<LayeredSoundConfig> layeredSounds;
 
   const MixState({
-    this.currentMix,
+    this.activeSavedMix,
     this.isPlaying = false,
+    this.currentNoiseParams = NoiseParams.classicBrown,
     this.noiseVolume = 0.8,
-    this.trackVolume = 0.8,
+    this.layeredSounds = const [],
   });
 
   MixState copyWith({
-    SoundscapeMix? currentMix,
+    SavedMix? activeSavedMix,
     bool? isPlaying,
+    NoiseParams? currentNoiseParams,
     double? noiseVolume,
-    double? trackVolume,
-  }) =>
-      MixState(
-        currentMix: currentMix ?? this.currentMix,
-        isPlaying: isPlaying ?? this.isPlaying,
-        noiseVolume: noiseVolume ?? this.noiseVolume,
-        trackVolume: trackVolume ?? this.trackVolume,
-      );
+    List<LayeredSoundConfig>? layeredSounds,
+    bool clearActiveMix = false,
+  }) {
+    return MixState(
+      activeSavedMix:
+          clearActiveMix ? null : (activeSavedMix ?? this.activeSavedMix),
+      isPlaying: isPlaying ?? this.isPlaying,
+      currentNoiseParams: currentNoiseParams ?? this.currentNoiseParams,
+      noiseVolume: noiseVolume ?? this.noiseVolume,
+      layeredSounds: layeredSounds ?? this.layeredSounds,
+    );
+  }
 }
 
 class MixController extends StateNotifier<MixState> {
   final AppDatabase _db;
   final NoiseController _noise;
-  final PlayerController _player;
+  final AudioEngine _engine;
 
-  MixController(this._db, this._noise, this._player)
-      : super(const MixState());
+  MixController(this._db, this._noise, this._engine) : super(const MixState());
 
-  Future<void> playMix(SoundscapeMix mix) async {
-    state = state.copyWith(
-      currentMix: mix,
-      isPlaying: true,
-      noiseVolume: mix.noiseVolume,
-      trackVolume: mix.trackVolume,
+  void setNoiseParams(NoiseParams params) {
+    state = state.copyWith(currentNoiseParams: params);
+    if (state.isPlaying) {
+      _engine.playNoise(params);
+    }
+  }
+
+  void setNoiseVolume(double volume) {
+    state = state.copyWith(noiseVolume: volume);
+    _engine.setNoiseVolume(volume);
+  }
+
+  Future<void> addSound(Track track, {double volume = 0.8, String loopMode = 'forever'}) async {
+    if (state.layeredSounds.length >= 3) return;
+
+    final config = LayeredSoundConfig(
+      trackId: track.id,
+      filePath: track.filePath,
+      title: track.title,
+      volume: volume,
+      loopMode: loopMode,
     );
+    final updated = [...state.layeredSounds, config];
+    final slot = updated.length - 1;
+    state = state.copyWith(layeredSounds: updated);
 
-    // Apply noise preset and volume, then play.
-    final preset = NoiseParams.presetMap[mix.noisePreset] ??
-        NoiseParams.classicBrown;
-    await _noise.selectPreset(mix.noisePreset, preset);
-    _noise.setVolume(mix.noiseVolume); // sync call
-    await _noise.play();
+    if (state.isPlaying) {
+      await _engine.playLayeredSound(
+        slot,
+        config.filePath,
+        volume: config.volume,
+        looping: config.loopMode != 'off',
+      );
+    }
+  }
 
-    // Load attached track if present.
-    if (mix.trackId != null) {
-      final track = await _db.getTrackById(mix.trackId!);
-      if (track != null) {
-        await _player.playTrack(track);
-        // TODO: PlayerController.setVolume — add this method if needed
+  Future<void> removeSound(int slot) async {
+    if (slot < 0 || slot >= state.layeredSounds.length) return;
+    await _engine.stopLayeredSound(slot);
+
+    final updated = [...state.layeredSounds]..removeAt(slot);
+    state = state.copyWith(layeredSounds: updated);
+
+    // Replay remaining sounds to adjust slots if active
+    if (state.isPlaying) {
+      await _engine.stopAllLayeredSounds();
+      for (int i = 0; i < updated.length; i++) {
+        final s = updated[i];
+        await _engine.playLayeredSound(
+          i,
+          s.filePath,
+          volume: s.volume,
+          looping: s.loopMode != 'off',
+        );
       }
     }
   }
 
+  Future<void> setLayerVolume(int slot, double volume) async {
+    if (slot < 0 || slot >= state.layeredSounds.length) return;
+    final updated = [...state.layeredSounds];
+    final current = updated[slot];
+    updated[slot] = LayeredSoundConfig(
+      trackId: current.trackId,
+      filePath: current.filePath,
+      title: current.title,
+      volume: volume,
+      loopMode: current.loopMode,
+      count: current.count,
+      durationMs: current.durationMs,
+      abStartMs: current.abStartMs,
+      abEndMs: current.abEndMs,
+    );
+    state = state.copyWith(layeredSounds: updated);
+    await _engine.setLayeredSoundVolume(slot, volume);
+  }
+
+  /// Restore saved mix in one tap.
+  Future<void> restoreMix(SavedMix mix) async {
+    final noiseParams = SavedMixModel.parseNoiseParams(mix.noiseParamsJson);
+    final sounds = SavedMixModel.parseSounds(mix.soundsJson);
+
+    state = state.copyWith(
+      activeSavedMix: mix,
+      isPlaying: true,
+      currentNoiseParams: noiseParams,
+      noiseVolume: mix.noiseVolume,
+      layeredSounds: sounds,
+    );
+
+    // Restore noise
+    await _engine.playNoise(noiseParams);
+    await _engine.setNoiseVolume(mix.noiseVolume);
+
+    // Restore up to 3 layered sounds with volumes and loop states
+    await _engine.stopAllLayeredSounds();
+    for (int i = 0; i < sounds.length && i < 3; i++) {
+      final s = sounds[i];
+      Duration? loopPoint;
+      if (s.abStartMs != null) {
+        loopPoint = Duration(milliseconds: s.abStartMs!);
+      }
+      await _engine.playLayeredSound(
+        i,
+        s.filePath,
+        volume: s.volume,
+        looping: s.loopMode != 'off',
+        loopPoint: loopPoint,
+      );
+    }
+  }
+
   Future<void> stopMix() async {
-    await _noise.stop();
-    await _player.pause();
+    await _engine.stopNoise();
+    await _engine.stopAllLayeredSounds();
     state = state.copyWith(isPlaying: false);
   }
 
-  /// Live noise volume — no debounce needed.
-  void setNoiseVolume(double v) {
-    state = state.copyWith(noiseVolume: v);
-    _noise.setVolume(v);
+  Future<void> playMix() async {
+    state = state.copyWith(isPlaying: true);
+    await _engine.playNoise(state.currentNoiseParams);
+    await _engine.setNoiseVolume(state.noiseVolume);
+
+    for (int i = 0; i < state.layeredSounds.length && i < 3; i++) {
+      final s = state.layeredSounds[i];
+      Duration? loopPoint;
+      if (s.abStartMs != null) {
+        loopPoint = Duration(milliseconds: s.abStartMs!);
+      }
+      await _engine.playLayeredSound(
+        i,
+        s.filePath,
+        volume: s.volume,
+        looping: s.loopMode != 'off',
+        loopPoint: loopPoint,
+      );
+    }
   }
 
-  /// Live track volume — TODO: expose setVolume on PlayerController.
-  void setTrackVolume(double v) {
-    state = state.copyWith(trackVolume: v);
-    // TODO: _player.setVolume(v) once PlayerController exposes it
-  }
+  Future<void> saveCurrentMix(String name) async {
+    final model = SavedMixModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: name,
+      noiseParams: state.currentNoiseParams,
+      noiseVolume: state.noiseVolume,
+      sounds: state.layeredSounds,
+    );
 
-  Future<void> saveMix(SoundscapeMix mix) async {
-    await _db.saveMix(MixesCompanion(
-      id: Value(mix.id),
-      name: Value(mix.name),
-      noisePreset: Value(mix.noisePreset),
-      noiseVolume: Value(mix.noiseVolume),
-      trackId: Value(mix.trackId),
-      trackVolume: Value(mix.trackVolume),
+    await _db.saveSavedMix(SavedMixesCompanion(
+      id: Value(model.id),
+      name: Value(model.name),
+      noiseParamsJson: Value(model.noiseParamsJson),
+      noiseVolume: Value(model.noiseVolume),
+      soundsJson: Value(model.soundsJson),
     ));
   }
 
-  Future<void> deleteMix(String id) async {
-    if (state.currentMix?.id == id) await stopMix();
-    await _db.deleteMix(id);
-    if (state.currentMix?.id == id) {
-      state = state.copyWith(currentMix: null);
+  Future<void> deleteSavedMix(String id) async {
+    if (state.activeSavedMix?.id == id) {
+      await stopMix();
+      state = state.copyWith(clearActiveMix: true);
     }
+    await _db.deleteSavedMix(id);
   }
 }
 
@@ -109,10 +219,10 @@ final mixControllerProvider =
     StateNotifierProvider<MixController, MixState>((ref) {
   final db = ref.watch(databaseProvider);
   final noise = ref.watch(noiseControllerProvider.notifier);
-  final player = ref.watch(playerControllerProvider.notifier);
-  return MixController(db, noise, player);
+  final engine = ref.watch(audioEngineProvider);
+  return MixController(db, noise, engine);
 });
 
-final mixesStreamProvider = StreamProvider<List<MixData>>((ref) {
-  return ref.watch(databaseProvider).watchAllMixes();
+final savedMixesStreamProvider = StreamProvider<List<SavedMix>>((ref) {
+  return ref.watch(databaseProvider).watchAllSavedMixes();
 });

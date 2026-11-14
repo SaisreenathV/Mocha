@@ -19,13 +19,18 @@ class SoLoudAudioEngine implements AudioEngine {
   double _noiseVolume = 1.0;
   int _noiseBufferId = 0;
 
-  // File voice
+  // Single file voice
   AudioSource? _fileSource;
   SoundHandle? _fileHandle;
   double _fileVolume = 1.0;
   Duration _fileDuration = Duration.zero;
   Timer? _positionTimer;
   final _positionController = StreamController<Duration>.broadcast();
+
+  // Layered Sound voices (up to 3 concurrent looping sounds)
+  final List<AudioSource?> _layeredSources = [null, null, null];
+  final List<SoundHandle?> _layeredHandles = [null, null, null];
+  final List<double> _layeredVolumes = [0.8, 0.8, 0.8];
 
   @override
   Duration get fileDuration => _fileDuration;
@@ -52,6 +57,7 @@ class SoLoudAudioEngine implements AudioEngine {
       await SoLoud.instance.disposeSource(_fileSource!);
       _fileSource = null;
     }
+    await stopAllLayeredSounds();
     await _positionController.close();
     if (SoLoud.instance.isInitialized) {
       await SoLoud.instance.deinit();
@@ -135,7 +141,7 @@ class SoLoudAudioEngine implements AudioEngine {
     }
   }
 
-  // --- File Voice ---
+  // --- Single File Voice ---
 
   @override
   Future<void> loadAndPlayFile(String path, {bool looping = false}) async {
@@ -219,9 +225,84 @@ class SoLoudAudioEngine implements AudioEngine {
     }
   }
 
+  // --- Layered Sound Voices (up to 3) ---
+
+  @override
+  Future<void> playLayeredSound(
+    int slot,
+    String path, {
+    double volume = 0.8,
+    bool looping = true,
+    Duration? loopPoint,
+  }) async {
+    if (slot < 0 || slot >= 3) return;
+    await init();
+
+    await stopLayeredSound(slot);
+
+    final source = await SoLoud.instance.loadFile(path);
+    _layeredSources[slot] = source;
+    _layeredVolumes[slot] = volume;
+
+    final handle = await SoLoud.instance.play(
+      source,
+      volume: volume,
+      looping: looping,
+    );
+    _layeredHandles[slot] = handle;
+
+    if (loopPoint != null) {
+      SoLoud.instance.setLoopPoint(handle, loopPoint);
+    }
+  }
+
+  @override
+  Future<void> stopLayeredSound(int slot) async {
+    if (slot < 0 || slot >= 3) return;
+    final handle = _layeredHandles[slot];
+    if (handle != null) {
+      SoLoud.instance.stop(handle);
+      _layeredHandles[slot] = null;
+    }
+    final source = _layeredSources[slot];
+    if (source != null) {
+      await SoLoud.instance.disposeSource(source);
+      _layeredSources[slot] = null;
+    }
+  }
+
+  @override
+  Future<void> setLayeredSoundVolume(int slot, double volume) async {
+    if (slot < 0 || slot >= 3) return;
+    _layeredVolumes[slot] = volume;
+    final handle = _layeredHandles[slot];
+    if (handle != null) {
+      SoLoud.instance.setVolume(handle, volume);
+    }
+  }
+
+  @override
+  Future<void> stopAllLayeredSounds() async {
+    for (int i = 0; i < 3; i++) {
+      await stopLayeredSound(i);
+    }
+  }
+
+  @override
+  Future<void> setMasterVolume(double volume) async {
+    if (SoLoud.instance.isInitialized) {
+      SoLoud.instance.setGlobalVolume(volume.clamp(0.0, 1.0));
+    }
+  }
+
   @override
   Future<void> pauseAll() async {
     await stopNoise(fadeDuration: const Duration(milliseconds: 150));
     await pauseFile();
+    for (final handle in _layeredHandles) {
+      if (handle != null) {
+        SoLoud.instance.setPause(handle, true);
+      }
+    }
   }
 }

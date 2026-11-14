@@ -9,7 +9,7 @@ abstract class AudioEngine {
   Future<void> stopNoise({Duration fadeDuration = const Duration(milliseconds: 250)});
   Future<void> setNoiseVolume(double volume);
 
-  // File voice
+  // Single file voice (for player / now playing)
   Future<void> loadAndPlayFile(String path, {bool looping = false});
   Future<void> pauseFile();
   Future<void> resumeFile();
@@ -20,6 +20,19 @@ abstract class AudioEngine {
   Duration get fileDuration;
   Stream<Duration> get filePositionStream;
 
-  // Master pause (pauses all voices)
+  // Layered Sound voices (up to 3 concurrent looping sounds)
+  Future<void> playLayeredSound(
+    int slot,
+    String path, {
+    double volume = 0.8,
+    bool looping = true,
+    Duration? loopPoint,
+  });
+  Future<void> stopLayeredSound(int slot);
+  Future<void> setLayeredSoundVolume(int slot, double volume);
+  Future<void> stopAllLayeredSounds();
+
+  // Master volume and pause
+  Future<void> setMasterVolume(double volume);
   Future<void> pauseAll();
 }
