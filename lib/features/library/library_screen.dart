@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/database.dart';
 import '../../data/providers.dart';
+import '../player/player_controller.dart';
 
 class LibraryScreen extends ConsumerStatefulWidget {
   const LibraryScreen({super.key});
@@ -82,6 +83,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
   Widget build(BuildContext context) {
     final tracksAsync = ref.watch(tracksStreamProvider(_query));
     final db = ref.read(databaseProvider);
+    final playerController = ref.read(playerControllerProvider.notifier);
+    final activeTrack = ref.watch(playerControllerProvider).currentTrack;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -156,20 +159,32 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> {
                   itemCount: tracks.length,
                   itemBuilder: (context, index) {
                     final track = tracks[index];
+                    final isCurrent = activeTrack?.id == track.id;
+
                     return ListTile(
+                      onTap: () => playerController.playTrack(track),
+                      selected: isCurrent,
+                      selectedTileColor: theme.colorScheme.surfaceContainerHigh.withOpacity(0.5),
                       leading: CircleAvatar(
-                        backgroundColor: theme.colorScheme.surfaceContainerHigh,
+                        backgroundColor: isCurrent
+                            ? theme.colorScheme.primaryContainer
+                            : theme.colorScheme.surfaceContainerHigh,
                         child: Icon(
                           track.isSound
                               ? Icons.graphic_eq_rounded
                               : Icons.music_note_rounded,
-                          color: theme.colorScheme.primary,
+                          color: isCurrent
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
                       title: Text(
                         track.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        style: isCurrent
+                            ? TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold)
+                            : null,
                       ),
                       subtitle: Text(
                         [
