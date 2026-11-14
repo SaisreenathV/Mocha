@@ -36,12 +36,25 @@ class ItemLoopConfigs extends Table {
   Set<Column> get primaryKey => {itemId};
 }
 
-@DriftDatabase(tables: [Tracks, ItemLoopConfigs])
+@DataClassName('MixData')
+class Mixes extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get noisePreset => text()();
+  RealColumn get noiseVolume => real().withDefault(const Constant(0.8))();
+  TextColumn get trackId => text().nullable()();
+  RealColumn get trackVolume => real().withDefault(const Constant(0.8))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [Tracks, ItemLoopConfigs, Mixes])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -49,6 +62,9 @@ class AppDatabase extends _$AppDatabase {
     onUpgrade: (m, from, to) async {
       if (from < 2) {
         await m.createTable(itemLoopConfigs);
+      }
+      if (from < 3) {
+        await m.createTable(mixes);
       }
     },
   );
@@ -80,6 +96,22 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> setLoopConfig(ItemLoopConfigsCompanion config) {
     return into(itemLoopConfigs).insertOnConflictUpdate(config);
+  }
+
+  Future<Track?> getTrackById(String id) {
+    return (select(tracks)..where((t) => t.id.equals(id))).getSingleOrNull();
+  }
+
+  Stream<List<MixData>> watchAllMixes() {
+    return (select(mixes)..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
+  }
+
+  Future<int> saveMix(MixesCompanion mix) {
+    return into(mixes).insertOnConflictUpdate(mix);
+  }
+
+  Future<int> deleteMix(String id) {
+    return (delete(mixes)..where((t) => t.id.equals(id))).go();
   }
 
   static LazyDatabase _openConnection() {
