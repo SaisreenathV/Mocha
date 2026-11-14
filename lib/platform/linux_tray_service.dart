@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
@@ -20,6 +21,17 @@ class LinuxTrayService with TrayListener, WindowListener {
       await windowManager.ensureInitialized();
       windowManager.addListener(this);
       await windowManager.setPreventClose(true);
+
+      final windowOptions = WindowOptions(
+        size: const Size(1020, 720),
+        minimumSize: const Size(540, 600),
+        center: true,
+        title: 'Mocha',
+      );
+      await windowManager.waitUntilReadyToShow(windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
 
       trayManager.addListener(this);
       // Use fallback icon if custom asset is not provided

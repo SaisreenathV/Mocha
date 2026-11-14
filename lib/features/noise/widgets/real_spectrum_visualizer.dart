@@ -129,16 +129,19 @@ class _SpectrumPainter extends CustomPainter {
     if (bands.isEmpty) return;
 
     final n = bands.length;
-    final totalSpacing = (n - 1) * 3.0;
-    final barWidth = ((size.width - totalSpacing) / n).clamp(2.0, 16.0);
+    const spacing = 4.0;
+    final totalSpacing = (n - 1) * spacing;
+    final barWidth = ((size.width - totalSpacing) / n).clamp(3.0, 36.0);
+    final totalContentWidth = n * barWidth + totalSpacing;
+    final startX = (size.width - totalContentWidth) / 2.0;
     final cornerRadius = Radius.circular(barWidth * 0.4);
 
     final bgPaint = Paint()..color = trackColor;
     final barPaint = Paint()..color = color;
 
     for (int i = 0; i < n; i++) {
-      final x = i * (barWidth + 3.0);
-      final heightFrac = bands[i].clamp(0.04, 1.0);
+      final x = startX + i * (barWidth + spacing);
+      final heightFrac = bands[i].clamp(0.06, 1.0);
       final barHeight = size.height * heightFrac;
       final y = size.height - barHeight;
 

@@ -50,9 +50,12 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-        children: [
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 860),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            children: [
           // Hero Brown Noise Card
           Hero(
             tag: 'brown_noise_card',
@@ -140,14 +143,14 @@ class HomeScreen extends ConsumerWidget {
                         RealSpectrumVisualizer(
                           params: noiseState.params,
                           isPlaying: noiseState.isPlaying,
-                          numBands: 16,
-                          height: 48,
+                          numBands: 28,
+                          height: 52,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
 
-                        // Depth Dial & Cutoff summary row
+                        // Depth Dial & Cutoff summary row (balanced centered layout)
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Column(
                               children: [
@@ -155,11 +158,11 @@ class HomeScreen extends ConsumerWidget {
                                   label: 'Rumble depth: ${noiseState.params.depth.toStringAsFixed(0)} Hertz',
                                   child: DepthDial(
                                     value: noiseState.params.depth,
-                                    size: 88,
+                                    size: 96,
                                     onChanged: (v) => noiseCtrl.updateParam((p) => p.copyWith(depth: v)),
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 6),
                                 Text(
                                   'Depth Dial',
                                   style: textTheme.labelSmall?.copyWith(
@@ -168,6 +171,7 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                               ],
                             ),
+                            const SizedBox(width: 48),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -185,7 +189,7 @@ class HomeScreen extends ConsumerWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 10),
                                 Text(
                                   'Stereo Width',
                                   style: textTheme.labelMedium?.copyWith(
@@ -296,8 +300,10 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 80),
         ],
       ),
-    );
-  }
+    ),
+  ),
+);
+}
 }
 
 class _StatColumn extends StatelessWidget {
