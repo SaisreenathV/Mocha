@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../audio/providers.dart';
-import '../../domain/audio_engine.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../domain/noise_params.dart';
+import '../../platform/mocha_audio_handler.dart';
 
 class NoiseState {
   final NoiseParams params;
@@ -37,21 +37,34 @@ class NoiseState {
 }
 
 class NoiseController extends StateNotifier<NoiseState> {
-  final AudioEngine _engine;
+  final MochaAudioHandler _audioHandler;
   Timer? _debounceTimer;
+  bool _hasRequestedNotificationPermission = false;
+  StreamSubscription? _playbackStateSubscription;
 
-  NoiseController(this._engine)
-      : super(const NoiseState(params: NoiseParams.classicBrown));
+  NoiseController(this._audioHandler)
+      : super(const NoiseState(params: NoiseParams.classicBrown)) {
+    _playbackStateSubscription = _audioHandler.playbackState.listen((event) {
+      if (mounted && state.isPlaying != event.playing) {
+        state = state.copyWith(isPlaying: event.playing);
+      }
+    });
+  }
 
   Future<void> play() async {
+    if (!_hasRequestedNotificationPermission) {
+      _hasRequestedNotificationPermission = true;
+      await Permission.notification.request();
+    }
+    _audioHandler.updatePreset(state.selectedPresetName, state.params);
     state = state.copyWith(isPlaying: true);
-    await _engine.playNoise(state.params);
+    await _audioHandler.play();
   }
 
   Future<void> stop() async {
     _debounceTimer?.cancel();
     state = state.copyWith(isPlaying: false, isUpdating: false);
-    await _engine.stopNoise();
+    await _audioHandler.pause();
   }
 
   Future<void> togglePlay() async {
@@ -62,25 +75,24 @@ class NoiseController extends StateNotifier<NoiseState> {
     }
   }
 
-  /// Changes volume instantly without re-rendering DSP audio.
   void setVolume(double volume) {
     state = state.copyWith(params: state.params.copyWith(volume: volume));
-    _engine.setNoiseVolume(volume);
+    _audioHandler.setVolume(volume);
   }
 
-  /// Debounces DSP changes (400ms) and sets isUpdating indicator.
   void updateParam(NoiseParams Function(NoiseParams) updater) {
     final updated = updater(state.params);
     state = state.copyWith(
       params: updated,
       selectedPresetName: 'Custom',
     );
+    _audioHandler.updatePreset('Custom', updated);
 
     if (state.isPlaying) {
       state = state.copyWith(isUpdating: true);
       _debounceTimer?.cancel();
       _debounceTimer = Timer(const Duration(milliseconds: 400), () async {
-        await _engine.playNoise(state.params);
+        await _audioHandler.play();
         if (mounted) {
           state = state.copyWith(isUpdating: false);
         }
@@ -95,8 +107,9 @@ class NoiseController extends StateNotifier<NoiseState> {
       selectedPresetName: name,
       isUpdating: false,
     );
+    _audioHandler.updatePreset(name, params);
     if (state.isPlaying) {
-      await _engine.playNoise(params);
+      await _audioHandler.play();
     }
   }
 
@@ -111,6 +124,7 @@ class NoiseController extends StateNotifier<NoiseState> {
 
   @override
   void dispose() {
+    _playbackStateSubscription?.cancel();
     _debounceTimer?.cancel();
     super.dispose();
   }
@@ -118,6 +132,6 @@ class NoiseController extends StateNotifier<NoiseState> {
 
 final noiseControllerProvider =
     StateNotifierProvider<NoiseController, NoiseState>((ref) {
-  final engine = ref.watch(audioEngineProvider);
-  return NoiseController(engine);
+  final handler = ref.watch(audioHandlerProvider);
+  return NoiseController(handler);
 });
