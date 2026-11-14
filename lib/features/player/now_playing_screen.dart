@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../audio/loop_controller.dart';
 import '../../domain/loop_config.dart';
 import 'player_controller.dart';
+import 'widgets/loop_config_sheet.dart';
 
 class NowPlayingScreen extends ConsumerWidget {
   const NowPlayingScreen({super.key});
@@ -11,6 +12,21 @@ class NowPlayingScreen extends ConsumerWidget {
     final minutes = duration.inMinutes;
     final seconds = duration.inSeconds % 60;
     return '$minutes:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  IconData _getLoopIcon(LoopMode mode) {
+    switch (mode) {
+      case LoopMode.off:
+        return Icons.repeat_rounded;
+      case LoopMode.forever:
+        return Icons.repeat_one_rounded;
+      case LoopMode.count:
+        return Icons.looks_one_rounded;
+      case LoopMode.duration:
+        return Icons.timer_rounded;
+      case LoopMode.ab:
+        return Icons.all_inclusive_rounded;
+    }
   }
 
   @override
@@ -28,7 +44,7 @@ class NowPlayingScreen extends ConsumerWidget {
 
     final totalMs = state.duration.inMilliseconds.toDouble();
     final currentMs = state.position.inMilliseconds.toDouble().clamp(0.0, totalMs > 0 ? totalMs : 1.0);
-    final isLoopingForever = activeLoopMode == LoopMode.forever;
+    final isLoopActive = activeLoopMode != LoopMode.off;
 
     return Scaffold(
       appBar: AppBar(
@@ -38,6 +54,20 @@ class NowPlayingScreen extends ConsumerWidget {
         ),
         title: const Text('Now Playing'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.tune_rounded),
+            tooltip: 'Loop Settings',
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                useSafeArea: true,
+                builder: (_) => LoopConfigSheet(track: track),
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
@@ -122,11 +152,11 @@ class NowPlayingScreen extends ConsumerWidget {
                   ),
                   IconButton(
                     icon: Icon(
-                      isLoopingForever ? Icons.repeat_one_rounded : Icons.repeat_rounded,
+                      _getLoopIcon(activeLoopMode),
                       size: 28,
-                      color: isLoopingForever ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
+                      color: isLoopActive ? theme.colorScheme.primary : theme.colorScheme.onSurfaceVariant,
                     ),
-                    tooltip: isLoopingForever ? 'Looping forever' : 'Loop off',
+                    tooltip: 'Mode: ${activeLoopMode.name}. Long press to configure.',
                     onPressed: () async {
                       final next = await loopController.toggleLoop(track.id, isSound: track.isSound);
                       ref.read(activeLoopModeProvider.notifier).state = next;
