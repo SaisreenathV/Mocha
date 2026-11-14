@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'core/shell/adaptive_shell.dart';
 import 'core/theme/mocha_theme.dart';
+import 'features/library/library_screen.dart';
 import 'features/noise/noise_studio_screen.dart';
 import 'features/placeholder_screen.dart';
 
@@ -23,7 +24,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/library',
-            builder: (context, state) => const PlaceholderScreen(title: 'Library'),
+            builder: (context, state) => const LibraryScreen(),
           ),
           GoRoute(
             path: '/noise',
