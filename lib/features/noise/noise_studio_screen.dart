@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/noise_params.dart';
 import 'noise_controller.dart';
 import 'widgets/depth_dial.dart';
+import 'widgets/real_spectrum_visualizer.dart';
 
 class NoiseStudioScreen extends ConsumerStatefulWidget {
   const NoiseStudioScreen({super.key});
@@ -102,7 +103,11 @@ class _NoiseStudioScreenState extends ConsumerState<NoiseStudioScreen>
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Hero(
+        tag: 'brown_noise_card',
+        child: Material(
+          color: Colors.transparent,
+          child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
           children: [
@@ -199,7 +204,16 @@ class _NoiseStudioScreenState extends ConsumerState<NoiseStudioScreen>
                 ],
               ],
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 16),
+
+            // Real FFT Spectrum Visualizer computed from rendered buffer
+            RealSpectrumVisualizer(
+              params: params,
+              isPlaying: state.isPlaying,
+              numBands: 20,
+              height: 52,
+            ),
+            const SizedBox(height: 24),
 
             // Depth Dial
             Column(
@@ -272,7 +286,8 @@ class _NoiseStudioScreenState extends ConsumerState<NoiseStudioScreen>
           ],
         ),
       ),
-    );
+    ),
+  );
   }
 
   Widget _buildSliderRow({
