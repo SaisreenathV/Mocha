@@ -3,6 +3,7 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/database.dart';
 import '../domain/audio_engine.dart';
+import '../domain/loop_config.dart';
 import '../domain/noise_params.dart';
 
 late final MochaAudioHandler globalAudioHandler;
@@ -17,9 +18,23 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
   double _userVolume = 1.0;
   bool _isDucked = false;
 
+  Future<void> Function()? _onSkipNext;
+  Future<void> Function()? _onSkipPrevious;
+  void Function(AudioServiceRepeatMode)? _onRepeatModeChanged;
+
   MochaAudioHandler(this._engine) {
     _initAudioSession();
     updatePreset('Classic Brown', _currentNoiseParams);
+  }
+
+  void setCallbacks({
+    Future<void> Function()? onSkipNext,
+    Future<void> Function()? onSkipPrevious,
+    void Function(AudioServiceRepeatMode)? onRepeatModeChanged,
+  }) {
+    _onSkipNext = onSkipNext;
+    _onSkipPrevious = onSkipPrevious;
+    _onRepeatModeChanged = onRepeatModeChanged;
   }
 
   Future<void> _initAudioSession() async {
@@ -84,6 +99,24 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
     );
   }
 
+  void updateLoopStatus(LoopMode mode) {
+    AudioServiceRepeatMode repeatMode;
+    switch (mode) {
+      case LoopMode.off:
+        repeatMode = AudioServiceRepeatMode.none;
+        break;
+      case LoopMode.forever:
+      case LoopMode.count:
+      case LoopMode.duration:
+        repeatMode = AudioServiceRepeatMode.all;
+        break;
+      case LoopMode.ab:
+        repeatMode = AudioServiceRepeatMode.one;
+        break;
+    }
+    playbackState.add(playbackState.value.copyWith(repeatMode: repeatMode));
+  }
+
   /// Master volume setter — only VolumeController may call this directly.
   void setVolume(double volume) {
     _userVolume = volume;
@@ -98,9 +131,23 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
   Future<void> play() async {
     playbackState.add(
       playbackState.value.copyWith(
-        controls: [MediaControl.pause, MediaControl.stop],
-        systemActions: const {MediaAction.play, MediaAction.pause, MediaAction.stop, MediaAction.seek},
-        androidCompactActions: const [0],
+        controls: [
+          MediaControl.skipToPrevious,
+          MediaControl.pause,
+          MediaControl.skipToNext,
+          MediaControl.stop,
+        ],
+        systemActions: const {
+          MediaAction.play,
+          MediaAction.pause,
+          MediaAction.playPause,
+          MediaAction.stop,
+          MediaAction.seek,
+          MediaAction.skipToNext,
+          MediaAction.skipToPrevious,
+          MediaAction.setRepeatMode,
+        },
+        androidCompactActions: const [0, 1, 2],
         processingState: AudioProcessingState.ready,
         playing: true,
       ),
@@ -108,18 +155,72 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
     await _engine.resumeFile();
   }
 
+  /// Pause handler — MUST NEVER start playback.
   @override
   Future<void> pause() async {
     playbackState.add(
       playbackState.value.copyWith(
-        controls: [MediaControl.play, MediaControl.stop],
-        systemActions: const {MediaAction.play, MediaAction.pause, MediaAction.stop, MediaAction.seek},
-        androidCompactActions: const [0],
+        controls: [
+          MediaControl.skipToPrevious,
+          MediaControl.play,
+          MediaControl.skipToNext,
+          MediaControl.stop,
+        ],
+        systemActions: const {
+          MediaAction.play,
+          MediaAction.pause,
+          MediaAction.playPause,
+          MediaAction.stop,
+          MediaAction.seek,
+          MediaAction.skipToNext,
+          MediaAction.skipToPrevious,
+          MediaAction.setRepeatMode,
+        },
+        androidCompactActions: const [0, 1, 2],
         processingState: AudioProcessingState.ready,
         playing: false,
       ),
     );
     await _engine.pauseAll();
+  }
+
+  /// Separate PlayPause handler for MPRIS & Tray.
+  Future<void> playPause() async {
+    if (playbackState.value.playing) {
+      await pause();
+    } else {
+      await play();
+    }
+  }
+
+  @override
+  Future<dynamic> customAction(String name, [Map<String, dynamic>? extras]) async {
+    if (name == 'playPause') {
+      await playPause();
+    }
+    return super.customAction(name, extras);
+  }
+
+  @override
+  Future<void> skipToNext() async {
+    if (_onSkipNext != null) {
+      await _onSkipNext!();
+    }
+  }
+
+  @override
+  Future<void> skipToPrevious() async {
+    if (_onSkipPrevious != null) {
+      await _onSkipPrevious!();
+    } else {
+      await seek(Duration.zero);
+    }
+  }
+
+  @override
+  Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
+    playbackState.add(playbackState.value.copyWith(repeatMode: repeatMode));
+    _onRepeatModeChanged?.call(repeatMode);
   }
 
   @override
