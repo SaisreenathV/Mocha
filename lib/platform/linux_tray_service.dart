@@ -7,7 +7,7 @@ import 'mocha_audio_handler.dart';
 
 class LinuxTrayService with TrayListener, WindowListener {
   final MochaAudioHandler _audioHandler;
-  bool closeToTray = true;
+  bool closeToTray = false;
   bool _initialized = false;
 
   LinuxTrayService(this._audioHandler);
