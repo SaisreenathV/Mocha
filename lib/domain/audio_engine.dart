@@ -11,6 +11,7 @@ abstract class AudioEngine {
 
   // Single file voice (for player / now playing)
   Future<void> loadAndPlayFile(String path, {bool looping = false});
+  Future<void> crossfadeToFile(String path, Duration duration);
   Future<void> pauseFile();
   Future<void> resumeFile();
   Future<void> seek(Duration position);
@@ -31,6 +32,11 @@ abstract class AudioEngine {
   Future<void> stopLayeredSound(int slot);
   Future<void> setLayeredSoundVolume(int slot, double volume);
   Future<void> stopAllLayeredSounds();
+
+  // Equalizer (applied on global bus)
+  Future<void> setEqEnabled(bool enabled);
+  Future<void> setEqBand(int bandIndex, double gainDb);
+  Future<void> applyEqBands(List<double> gainsDb);
 
   // Master volume and pause
   Future<void> setMasterVolume(double volume);

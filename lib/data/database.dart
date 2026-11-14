@@ -62,12 +62,24 @@ class SavedMixes extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Tracks, ItemLoopConfigs, Mixes, SavedMixes])
+@DataClassName('EqSettings')
+class EqSettingsTable extends Table {
+  TextColumn get id => text().withDefault(const Constant('global_eq'))();
+  BoolColumn get enabled => boolean().withDefault(const Constant(true))();
+  TextColumn get presetName => text().withDefault(const Constant('Flat'))();
+  TextColumn get bandsJson => text()();
+  RealColumn get crossfadeSeconds => real().withDefault(const Constant(3.0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+@DriftDatabase(tables: [Tracks, ItemLoopConfigs, Mixes, SavedMixes, EqSettingsTable])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -81,6 +93,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 4) {
         await m.createTable(savedMixes);
+      }
+      if (from < 5) {
+        await m.createTable(eqSettingsTable);
       }
     },
   );
@@ -144,6 +159,14 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> deleteSavedMix(String id) {
     return (delete(savedMixes)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<EqSettings?> getEqSettings() {
+    return (select(eqSettingsTable)..where((t) => t.id.equals('global_eq'))).getSingleOrNull();
+  }
+
+  Future<int> saveEqSettings(EqSettingsTableCompanion settings) {
+    return into(eqSettingsTable).insertOnConflictUpdate(settings);
   }
 
   static LazyDatabase _openConnection() {
