@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../domain/noise_params.dart';
@@ -52,7 +53,7 @@ class NoiseController extends StateNotifier<NoiseState> {
   }
 
   Future<void> play() async {
-    if (!_hasRequestedNotificationPermission) {
+    if (Platform.isAndroid && !_hasRequestedNotificationPermission) {
       _hasRequestedNotificationPermission = true;
       await Permission.notification.request();
     }

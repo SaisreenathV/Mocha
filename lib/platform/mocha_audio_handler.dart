@@ -152,7 +152,13 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
         playing: true,
       ),
     );
-    await _engine.resumeFile();
+    if (mediaItem.value?.id == 'brown_noise' || _engine.fileDuration == Duration.zero) {
+      if (_currentNoiseParams != null) {
+        await _engine.playNoise(_currentNoiseParams!);
+      }
+    } else {
+      await _engine.resumeFile();
+    }
   }
 
   /// Pause handler — MUST NEVER start playback.
@@ -181,7 +187,8 @@ class MochaAudioHandler extends BaseAudioHandler with SeekHandler {
         playing: false,
       ),
     );
-    await _engine.pauseAll();
+    await _engine.stopNoise();
+    await _engine.pauseFile();
   }
 
   /// Separate PlayPause handler for MPRIS & Tray.
