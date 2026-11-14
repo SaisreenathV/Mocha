@@ -74,12 +74,35 @@ class EqSettingsTable extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-@DriftDatabase(tables: [Tracks, ItemLoopConfigs, Mixes, SavedMixes, EqSettingsTable])
+@DataClassName('ListeningSession')
+class ListeningSessions extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get trackId => text().nullable()();
+  TextColumn get title => text()();
+  BoolColumn get isSound => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get startTime => dateTime()();
+  DateTimeColumn get endTime => dateTime()();
+  IntColumn get durationSeconds => integer()();
+}
+
+class SoundStat {
+  final String title;
+  final int totalSeconds;
+  final int sessionCount;
+
+  const SoundStat({
+    required this.title,
+    required this.totalSeconds,
+    required this.sessionCount,
+  });
+}
+
+@DriftDatabase(tables: [Tracks, ItemLoopConfigs, Mixes, SavedMixes, EqSettingsTable, ListeningSessions])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -96,6 +119,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 5) {
         await m.createTable(eqSettingsTable);
+      }
+      if (from < 6) {
+        await m.createTable(listeningSessions);
       }
     },
   );
@@ -167,6 +193,95 @@ class AppDatabase extends _$AppDatabase {
 
   Future<int> saveEqSettings(EqSettingsTableCompanion settings) {
     return into(eqSettingsTable).insertOnConflictUpdate(settings);
+  }
+
+  Future<int> insertListeningSession(ListeningSessionsCompanion session) {
+    return into(listeningSessions).insert(session);
+  }
+
+  Stream<List<ListeningSession>> watchRecentSessions({int limit = 50}) {
+    return (select(listeningSessions)
+          ..orderBy([(t) => OrderingTerm.desc(t.startTime)])
+          ..limit(limit))
+        .watch();
+  }
+
+  Future<int> getTotalSecondsThisWeek() async {
+    final now = DateTime.now();
+    // Start of current week (Monday at 00:00:00)
+    final startOfWeek = DateTime(now.year, now.month, now.day)
+        .subtract(Duration(days: now.weekday - 1));
+
+    final sessions = await (select(listeningSessions)
+          ..where((t) => t.startTime.isBiggerOrEqualValue(startOfWeek)))
+        .get();
+
+    return sessions.fold<int>(0, (sum, s) => sum + s.durationSeconds);
+  }
+
+  Future<int> getLongestSessionSeconds() async {
+    final sessions = await select(listeningSessions).get();
+    if (sessions.isEmpty) return 0;
+    return sessions.map((s) => s.durationSeconds).reduce((a, b) => a > b ? a : b);
+  }
+
+  Future<int> getCurrentStreakDays() async {
+    final sessions = await (select(listeningSessions)
+          ..orderBy([(t) => OrderingTerm.desc(t.startTime)]))
+        .get();
+
+    if (sessions.isEmpty) return 0;
+
+    final distinctDays = sessions
+        .map((s) => DateTime(s.startTime.year, s.startTime.month, s.startTime.day))
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+
+    if (distinctDays.first != today && distinctDays.first != yesterday) {
+      return 0;
+    }
+
+    int streak = 1;
+    DateTime checkDay = distinctDays.first;
+
+    for (int i = 1; i < distinctDays.length; i++) {
+      final prevDay = checkDay.subtract(const Duration(days: 1));
+      if (distinctDays[i] == prevDay) {
+        streak++;
+        checkDay = prevDay;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  Future<List<SoundStat>> getTopSounds({int limit = 5}) async {
+    final sessions = await (select(listeningSessions)
+          ..where((t) => t.isSound.equals(true)))
+        .get();
+
+    final map = <String, List<int>>{};
+    for (final s in sessions) {
+      map.putIfAbsent(s.title, () => []).add(s.durationSeconds);
+    }
+
+    final stats = map.entries.map((e) {
+      final totalSec = e.value.reduce((a, b) => a + b);
+      return SoundStat(
+        title: e.key,
+        totalSeconds: totalSec,
+        sessionCount: e.value.length,
+      );
+    }).toList();
+
+    stats.sort((a, b) => b.totalSeconds.compareTo(a.totalSeconds));
+    return stats.take(limit).toList();
   }
 
   static LazyDatabase _openConnection() {
