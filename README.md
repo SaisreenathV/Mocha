@@ -2,7 +2,7 @@
   <h1 align="center">☕ Mocha</h1>
   <p align="center">
     <b>Offline brown noise generator & audio player</b><br>
-    Pure math-driven noise synthesis · 8-band EQ · Soundscapes · Synced lyrics · Listening stats
+    Pure math-driven noise synthesis · 8-band EQ · Soundscapes · Synced lyrics · Listening stats<br>
     <b>Created with the help of a Agentic Workflow on AntiGravity</b>
   </p>
   <p align="center">
