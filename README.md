@@ -1,35 +1,49 @@
-# Mocha ☕
-
-A modern, offline-first Flutter desktop (Linux) and mobile (Android) audio app for pure generated brown noise, layered soundscapes, and offline audio playback with advanced looping, equalizer, synced lyrics, listening statistics, and deep desktop integration.
+<p align="center">
+  <h1 align="center">☕ Mocha</h1>
+  <p align="center">
+    <b>Offline brown noise generator & audio player</b><br>
+    Pure math-driven noise synthesis · 8-band EQ · Soundscapes · Synced lyrics · Listening stats
+    <b>Created with the help of a Agentic Workflow on AntiGravity</b>
+  </p>
+  <p align="center">
+    <img src="https://img.shields.io/badge/Flutter-3.50-02569B?logo=flutter" alt="Flutter">
+    <img src="https://img.shields.io/badge/Platforms-Linux%20%7C%20Windows%20%7C%20Android-blueviolet" alt="Platforms">
+    <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+    <img src="https://img.shields.io/badge/Offline-100%25-orange" alt="Offline">
+  </p>
+</p>
 
 ---
 
 ## ✨ Features
 
-- **Pure Brown Noise Synthesizer:** Mathematically generated brown noise via leaky integration with customizable low-frequency rumble depth, high-cut filter, warmth boost, and stereo spread.
-- **Real FFT Spectrum Visualizer:** Animated frequency spectrum analyzer computed directly from the real rendered audio buffer using a Radix-2 Cooley-Tukey FFT with Hanning windowing (no synthetic formulas).
-- **Interactive Depth Dial:** Custom rotational dial for intuitive, low-end rumble corner frequency adjustment across the Home screen and Noise Studio.
-- **Layered Soundscape Mixes:** Combine generated brown noise with up to 3 concurrent looping environmental sounds (rain, stream, birds, etc.) with independent voice levels and 1-tap restore.
-- **Advanced Looping Engine:** Off, Loop Forever, Loop N Count, Loop Duration, and seamless A-B sub-track segment looping.
-- **Master Equalizer & Crossfade:** Global bus 8-band parametric EQ (60 Hz to 15 kHz) with Flat, Bass Boost, Vocal, and Night presets. Smooth 0–12s queue crossfading.
-- **Synced Lyrics (.lrc):** Fast binary-search LRC parser with automatic sidecar `.lrc` file detection, smooth auto-scrolling, active line highlighting, and tap-to-seek.
-- **Offline Listening Stats:** Drift SQLite database tracking weekly listening duration, longest session, daily focus streaks, and top 5 sounds via custom lightweight bar widgets.
-- **Linux Desktop Integration:**
-  - **MPRIS 2:** D-Bus media controls with strict play/pause separation, metadata, and loop status.
-  - **System Tray:** Tray icon with Show, Play/Pause, Quit, and close-to-tray window management.
-  - **Drag & Drop:** Drop audio files directly onto the app window to import into your library.
-  - **Keyboard Shortcuts:** Global shortcuts for Space (play/pause), Left/Right (±10s seek), L (loop), and Ctrl+K (search), automatically disabled during text input.
+| Feature | Description |
+|---|---|
+| **🎵 Brown Noise Engine** | Pure Dart DSP synthesis using leaky integration — no audio files, no network. 6 presets: Classic, Deep Rumble, Soft, Focus, Deep Sleep, Airplane Cabin. |
+| **🎛️ Noise Studio** | Interactive rotational depth dial, low-pass filter, stereo width, and warmth controls with real-time parameter tuning. |
+| **📊 Live Spectrum** | Animated FFT frequency visualizer (Radix-2 Cooley-Tukey with Hanning window) computed from actual synthesized audio buffers. |
+| **🎚️ 8-Band Equalizer** | Parametric EQ powered by SoLoud filters — adjusts both generated noise and imported audio files simultaneously. |
+| **🎼 Soundscapes** | Layer brown noise with up to 3 additional audio files. Save and restore mixes with a single tap. Adjustable crossfade (0–12s). |
+| **📁 Local Library** | Import and play offline audio files (MP3, FLAC, WAV, OGG, AAC, MKA). Drag-and-drop support on desktop. |
+| **🔁 Advanced Looping** | 5 loop modes: Off, Forever, Count, Duration, and A–B segment looping with tap-to-set markers. |
+| **🎤 Synced Lyrics** | Auto-detects `.lrc` sidecar files, displays time-synced lyrics with tap-to-seek and active line highlighting. |
+| **📈 Listening Stats** | Tracks sessions ≥ 5 seconds. Weekly duration bar chart, daily streak counter, and top sounds leaderboard. |
+| **🖥️ Desktop Integration** | Linux MPRIS 2 D-Bus media controls, system tray with context menu, keyboard shortcuts (Space, arrows, L). |
+| **📱 Android Background** | Foreground service with media notification, lock-screen controls, and media session integration. |
+| **🌙 Sleep & Focus Timers** | Volume fade-out sleep timer and Pomodoro-style volume ducking for focus sessions. |
+| **♿ Accessible** | Full semantics labels, scalable typography, and designed empty/error/permission state views. |
 
 ---
 
-## 🏗️ Architecture & Technology Stack
+## 📸 Screenshot
 
-- **Framework:** Flutter (Material 3 Latte light and Espresso dark themes)
-- **State Management:** Riverpod (`StateNotifierProvider`, `NotifierProvider`, `FutureProvider`)
-- **Navigation:** `go_router` with responsive `AdaptiveShell` (navigation rail for desktop/wide displays, bottom navigation for mobile)
-- **Audio Engine:** `flutter_soloud` native audio engine with global bus filtering and multi-voice isolate rendering
-- **Database:** `drift` + `sqlite3` for offline persistence of tracks, loop configurations, soundscapes, EQ presets, and listening sessions
-- **Offline-First Assets:** Bundled local fonts and assets (zero runtime Google Fonts network calls)
+> The app uses a dark obsidian-black theme with purple accents. Adaptive layout: sidebar navigation on desktop, bottom bar on mobile.
+
+<p align="center">
+  <img src="screenshots/desktop.png" alt="Mocha Desktop View" width="68%" />
+  &nbsp;&nbsp;
+  <img src="screenshots/android.jpg" alt="Mocha Android View" width="24%" />
+</p>
 
 ---
 
@@ -37,65 +51,184 @@ A modern, offline-first Flutter desktop (Linux) and mobile (Android) audio app f
 
 ### Prerequisites
 
-- Flutter SDK (>= 3.24.0)
-- Linux build dependencies (for desktop):
-  ```bash
-  sudo apt install clang cmake ninja-build pkg-config libgtk-3-dev libasound2-dev libayatana-appindicator3-dev
-  ```
+- **Flutter SDK** ≥ 3.24.0 — [Install Flutter](https://docs.flutter.dev/get-started/install)
+- **Dart SDK** ≥ 3.5.0 (bundled with Flutter)
 
-### Code Generation & Database Setup
+#### Platform-specific
 
-Before building or running the project, generate the Drift database and schema files:
+| Platform | Requirements |
+|---|---|
+| **Linux** | `clang`, `cmake`, `ninja-build`, `pkg-config`, `libgtk-3-dev`, `libasound2-dev`, `libappindicator3-dev` |
+| **Windows** | Visual Studio 2022 with C++ desktop workload |
+| **Android** | Android SDK 36+, `cmdline-tools`, JDK 17 |
+
+### Clone & Install
+
+```bash
+git clone https://github.com/yourusername/mocha.git
+cd mocha
+flutter pub get
+```
+
+### Generate Drift Database Code
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-### Running Tests
+---
 
-Run the full suite of unit tests for DSP synthesis, loop controllers, and the LRC parser:
+## 🏗️ Build & Run
+
+### 🐧 Linux
+
+```bash
+# Debug
+flutter run -d linux
+
+# Release
+flutter build linux --release
+./build/linux/x64/release/bundle/mocha
+```
+
+#### Install to App Launcher
+
+```bash
+# Copy desktop entry
+cp packaging/linux/mocha.desktop ~/.local/share/applications/
+# Update Exec= path inside the .desktop file to point to your release bundle
+update-desktop-database ~/.local/share/applications
+```
+
+### 🪟 Windows
+
+```bash
+# Debug
+flutter run -d windows
+
+# Release
+flutter build windows --release
+# Output: build\windows\x64\runner\Release\mocha.exe
+```
+
+### 🤖 Android
+
+```bash
+# Debug on connected device
+flutter run
+
+# Release APK
+flutter build apk --release
+# Output: build/app/outputs/flutter-apk/app-release.apk
+
+# Install on device
+adb install -r build/app/outputs/flutter-apk/app-release.apk
+```
+
+---
+
+## 📂 Project Structure
+
+```
+mocha/
+├── lib/
+│   ├── main.dart                    # Entry point
+│   ├── app.dart                     # Router & MaterialApp
+│   ├── core/
+│   │   ├── theme/mocha_theme.dart   # Obsidian purple theme
+│   │   ├── shell/adaptive_shell.dart # Responsive nav layout
+│   │   └── widgets/state_views.dart  # Empty/error/permission views
+│   ├── domain/                      # Pure models (no Flutter imports)
+│   │   ├── noise_params.dart        # DSP parameters & presets
+│   │   ├── audio_engine.dart        # Abstract engine interface
+│   │   ├── loop_config.dart         # Loop mode definitions
+│   │   ├── eq_config.dart           # Equalizer band config
+│   │   ├── lrc_parser.dart          # LRC lyrics parser
+│   │   ├── saved_mix.dart           # Soundscape persistence
+│   │   └── mix_model.dart           # Mix state model
+│   ├── audio/                       # Audio engine layer
+│   │   ├── dsp/
+│   │   │   ├── brown_noise_synthesizer.dart  # Leaky integrator DSP
+│   │   │   └── spectrum_analyzer.dart        # FFT analyzer
+│   │   ├── soloud_audio_engine.dart  # SoLoud implementation
+│   │   ├── loop_controller.dart      # Loop logic & DB persistence
+│   │   ├── volume_controller.dart    # Sleep fade & Pomodoro duck
+│   │   └── providers.dart            # Riverpod providers
+│   ├── data/
+│   │   ├── database.dart             # Drift SQLite schema (v6)
+│   │   ├── database.g.dart           # Generated code
+│   │   ├── importer.dart             # Track import logic
+│   │   └── providers.dart            # DB providers
+│   ├── features/
+│   │   ├── home/home_screen.dart     # Hero card & quick actions
+│   │   ├── noise/                    # Noise Studio (dial, presets, spectrum)
+│   │   ├── library/library_screen.dart
+│   │   ├── player/                   # Now Playing, MiniPlayer, loop/timer sheets
+│   │   ├── mixes/                    # Soundscape builder & manager
+│   │   ├── eq/                       # 8-band parametric EQ
+│   │   ├── lyrics/lyrics_screen.dart # Synced LRC display
+│   │   └── stats/                    # Listening stats & session recorder
+│   └── platform/
+│       ├── mocha_audio_handler.dart   # MPRIS2 / Android media session
+│       └── linux_tray_service.dart    # System tray & window management
+├── android/                          # Android runner
+├── linux/                            # Linux runner (single-instance)
+├── windows/                          # Windows runner
+├── test/                             # Unit tests
+│   ├── brown_noise_test.dart
+│   ├── loop_controller_test.dart
+│   └── lrc_parser_test.dart
+├── packaging/linux/mocha.desktop     # Freedesktop launcher entry
+├── tool/build_appimage.sh            # AppImage build script
+└── pubspec.yaml
+```
+
+---
+
+## 🧪 Tests
 
 ```bash
 flutter test
 ```
 
----
-
-## 📦 Building for Production
-
-### Linux Desktop Native Build
-
-To build the standalone release binary for Linux:
-
-```bash
-flutter build linux --release
-```
-
-The output executable will be placed in `build/linux/x64/release/bundle/`.
-
-### Linux AppImage Packaging
-
-Mocha includes an automated script to generate a portable, standalone Linux AppImage containing all native libraries, desktop entry, and icon:
-
-```bash
-chmod +x tool/build_appimage.sh
-./tool/build_appimage.sh
-```
-
-The resulting `Mocha-x86_64.AppImage` will be placed in `build/appimage/`.
-
-### Android APK Build
-
-To compile a release APK for Android:
-
-```bash
-flutter build apk --release
-```
+Tests cover:
+- **Brown noise synthesis** — verifies output amplitude range and spectral rolloff
+- **Loop controller** — tests all 5 loop modes with in-memory SQLite
+- **LRC parser** — validates timestamp parsing, edge cases, and seek behavior
 
 ---
 
-## ⚠️ Known Limitations
+## 🔧 Tech Stack
 
-1. **MPRIS on Linux:** The MPRIS 2 D-Bus interface requires an active desktop session bus (standard on GNOME, KDE Plasma, XFCE, and modern Wayland/X11 compositors). It is gracefully disabled in headless environments.
-2. **Native Audio Bindings:** The `flutter_soloud` engine requires native audio device access (`libasound` / ALSA / PulseAudio / PipeWire).
-3. **Offline Lyrics:** Synced lyrics require an LRC file placed with matching filename next to the audio track (e.g., `song.mp3` and `song.lrc`).
+| Component | Technology |
+|---|---|
+| Framework | Flutter 3.50 (Material 3) |
+| State | Riverpod 2 |
+| Routing | go_router |
+| Audio Engine | SoLoud (via flutter_soloud) |
+| Media Session | audio_service (MPRIS 2 + Android) |
+| Database | Drift (SQLite) |
+| DSP | Pure Dart (leaky integrator, Cooley-Tukey FFT) |
+| Desktop | window_manager, tray_manager, desktop_drop |
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feat/your-feature`)
+3. Commit changes (`git commit -m "feat: add your feature"`)
+4. Push to the branch (`git push origin feat/your-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+<p align="center">
+  Built with pure math
+</p>
